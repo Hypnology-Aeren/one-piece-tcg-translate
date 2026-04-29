@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPTCG Kart Çevirici - One Piece TCG Simulator</title>
+    <meta name="description" content="One Piece TCG Simulator için kart çevirme ve Türkçe çeviri uygulaması. Kartları arayın, efektlerini Türkçe olarak görüntüleyin.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <!-- Header -->
+    <header class="main-header" id="mainHeader">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="22" stroke="url(#logoGrad)" stroke-width="3" fill="none"/>
+                        <path d="M16 20C16 20 20 28 24 28C28 28 32 20 32 20" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="18" cy="18" r="2" fill="url(#logoGrad)"/>
+                        <circle cx="30" cy="18" r="2" fill="url(#logoGrad)"/>
+                        <path d="M24 2L24 8M24 40L24 46M2 24L8 24M40 24L46 24" stroke="url(#logoGrad)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0" y1="0" x2="48" y2="48">
+                                <stop offset="0%" stop-color="#f97316"/>
+                                <stop offset="100%" stop-color="#ef4444"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>OPTCG Çevirici</h1>
+                    <span class="logo-subtitle">Kart Efekt Çevirisi</span>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <button class="nav-btn active" data-view="search" id="navSearch">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    Ara
+                </button>
+                <button class="nav-btn" data-view="sets" id="navSets">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                    </svg>
+                    Setler
+                </button>
+                <button class="nav-btn" data-view="favorites" id="navFavorites">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                    Favoriler
+                </button>
+            </nav>
+            <div class="header-stats">
+                <div class="stat-pill" id="totalCardsCount">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Kart</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Search View -->
+        <section class="view-section active" id="searchView">
+            <div class="search-hero">
+                <h2 class="hero-title">
+                    <span class="gradient-text">Kartını Bul</span>, Çevirisini Gör
+                </h2>
+                <p class="hero-subtitle">Kart ID veya ismi ile arama yapın — efektler otomatik olarak Türkçe'ye çevrilir</p>
+                <div class="search-container" id="searchContainer">
+                    <div class="search-input-wrapper">
+                        <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Kart ID (ör: OP01-001) veya isim (ör: Luffy)..." 
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
+                        <button class="search-clear-btn" id="searchClearBtn" style="display:none;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="search-filters">
+                        <select id="colorFilter" class="filter-select">
+                            <option value="">Tüm Renkler</option>
+                            <option value="Red">🔴 Kırmızı</option>
+                            <option value="Blue">🔵 Mavi</option>
+                            <option value="Green">🟢 Yeşil</option>
+                            <option value="Purple">🟣 Mor</option>
+                            <option value="Black">⚫ Siyah</option>
+                            <option value="Yellow">🟡 Sarı</option>
+                        </select>
+                        <select id="typeFilter" class="filter-select">
+                            <option value="">Tüm Tipler</option>
+                            <option value="Leader">👑 Lider</option>
+                            <option value="Character">⚔️ Karakter</option>
+                            <option value="Event">✨ Olay</option>
+                            <option value="Stage">🏰 Sahne</option>
+                        </select>
+                        <select id="setFilter" class="filter-select">
+                            <option value="">Tüm Setler</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Results -->
+            <div class="results-section" id="resultsSection">
+                <div class="results-header" id="resultsHeader" style="display:none;">
+                    <span class="results-count" id="resultsCount"></span>
+                    <div class="results-view-toggle">
+                        <button class="view-toggle-btn active" data-grid="grid" id="gridViewBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                                <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                            </svg>
+                        </button>
+                        <button class="view-toggle-btn" data-grid="list" id="listViewBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+                                <line x1="8" y1="18" x2="21" y2="18"/>
+                                <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
+                                <line x1="3" y1="18" x2="3.01" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="cards-grid" id="cardsGrid"></div>
+                <div class="loading-spinner" id="loadingSpinner" style="display:none;">
+                    <div class="spinner-ring"></div>
+                    <p>Kartlar yükleniyor...</p>
+                </div>
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        </svg>
+                    </div>
+                    <h3>Kart aramaya başlayın</h3>
+                    <p>Bir kart ID'si veya isim girerek başlayın, veya setleri göz atın</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sets View -->
+        <section class="view-section" id="setsView">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                    </svg>
+                    Kart Setleri
+                </h2>
+                <p class="section-subtitle">Bir sete tıklayarak tüm kartlarını görüntüleyin</p>
+            </div>
+            <div class="sets-grid" id="setsGrid">
+                <div class="loading-spinner" id="setsLoading">
+                    <div class="spinner-ring"></div>
+                    <p>Setler yükleniyor...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Favorites View -->
+        <section class="view-section" id="favoritesView">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                    Favori Kartlarım
+                </h2>
+                <p class="section-subtitle">Kaydettiğiniz kartlara hızlıca erişin</p>
+            </div>
+            <div class="cards-grid" id="favoritesGrid"></div>
+            <div class="empty-state" id="favoritesEmpty">
+                <div class="empty-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                </div>
+                <h3>Henüz favori kartınız yok</h3>
+                <p>Kartların üzerindeki kalp ikonuna tıklayarak favorilere ekleyin</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Card Detail Modal -->
+    <div class="modal-overlay" id="cardModal">
+        <div class="modal-content" id="modalContent">
+            <button class="modal-close" id="modalClose">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="modal-body">
+                <div class="modal-card-image">
+                    <img id="modalCardImage" src="" alt="Kart Görseli">
+                    <button class="favorite-btn modal-fav-btn" id="modalFavBtn">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-card-info">
+                    <div class="modal-card-header">
+                        <span class="card-id-badge" id="modalCardId"></span>
+                        <span class="card-rarity-badge" id="modalRarity"></span>
+                    </div>
+                    <h2 class="modal-card-name" id="modalCardName"></h2>
+                    <div class="modal-card-name-tr" id="modalCardNameTr"></div>
+                    
+                    <div class="modal-stats-grid">
+                        <div class="modal-stat" id="modalColorStat">
+                            <span class="stat-label-text">Renk</span>
+                            <span class="stat-value" id="modalColor"></span>
+                        </div>
+                        <div class="modal-stat" id="modalTypeStat">
+                            <span class="stat-label-text">Tip</span>
+                            <span class="stat-value" id="modalType"></span>
+                        </div>
+                        <div class="modal-stat" id="modalCostStat">
+                            <span class="stat-label-text">Maliyet</span>
+                            <span class="stat-value" id="modalCost"></span>
+                        </div>
+                        <div class="modal-stat" id="modalPowerStat">
+                            <span class="stat-label-text">Güç</span>
+                            <span class="stat-value" id="modalPower"></span>
+                        </div>
+                        <div class="modal-stat" id="modalCounterStat">
+                            <span class="stat-label-text">Counter</span>
+                            <span class="stat-value" id="modalCounter"></span>
+                        </div>
+                        <div class="modal-stat" id="modalLifeStat">
+                            <span class="stat-label-text">Can</span>
+                            <span class="stat-value" id="modalLife"></span>
+                        </div>
+                    </div>
+
+                    <div class="modal-subtypes" id="modalSubtypes">
+                        <span class="stat-label-text">Alt Tipler</span>
+                        <div class="subtypes-tags" id="modalSubtypesTags"></div>
+                    </div>
+
+                    <div class="modal-effect-section">
+                        <div class="effect-header">
+                            <h3>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                                </svg>
+                                Kart Efekti
+                            </h3>
+                        </div>
+                        <div class="effect-box original" id="modalEffectOriginal">
+                            <div class="effect-label">
+                                <img src="https://flagcdn.com/w20/gb.png" alt="EN" width="16"> İngilizce
+                            </div>
+                            <p id="modalEffectEn"></p>
+                        </div>
+                        <div class="effect-divider">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <polyline points="19 12 12 19 5 12"/>
+                            </svg>
+                        </div>
+                        <div class="effect-box translated" id="modalEffectTranslated">
+                            <div class="effect-label">
+                                <img src="https://flagcdn.com/w20/tr.png" alt="TR" width="16"> Türkçe Çeviri
+                            </div>
+                            <p id="modalEffectTr"></p>
+                            <div class="translating-indicator" id="translatingIndicator" style="display:none;">
+                                <div class="spinner-small"></div>
+                                <span>Çevriliyor...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-set-info">
+                        <span class="set-badge" id="modalSetName"></span>
+                        <span class="attribute-badge" id="modalAttribute"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Notification Banner -->
+    <div class="update-banner" id="updateBanner" style="display:none;">
+        <div class="update-banner-content">
+            <div class="update-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </div>
+            <div class="update-info">
+                <span class="update-title" id="updateTitle">Yeni güncelleme mevcut!</span>
+                <span class="update-version" id="updateVersion"></span>
+            </div>
+            <div class="update-progress-wrapper" id="updateProgressWrapper" style="display:none;">
+                <div class="update-progress-bar">
+                    <div class="update-progress-fill" id="updateProgressFill"></div>
+                </div>
+                <span class="update-progress-text" id="updateProgressText">0%</span>
+            </div>
+            <div class="update-actions">
+                <button class="update-btn update-btn-primary" id="updateActionBtn" onclick="handleUpdateAction()">
+                    İndir
+                </button>
+                <button class="update-btn update-btn-dismiss" id="updateDismissBtn" onclick="dismissUpdate()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Version Badge -->
+    <div class="version-badge" id="versionBadge" title="Güncelleme kontrolü">
+        <span id="versionText">v1.0.0</span>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+    <script src="updater.js"></script>
+</body>
+</html>

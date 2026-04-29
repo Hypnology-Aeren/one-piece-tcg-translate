@@ -1,0 +1,49 @@
+{
+  "name": "optcg-cevirici",
+  "version": "1.0.0",
+  "description": "OPTCG Kart Çevirici",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --publish never",
+    "release": "electron-builder --win --publish always"
+  },
+  "build": {
+    "appId": "com.optcg.cevirici",
+    "productName": "OPTCG Çevirici",
+    "win": {
+      "target": "nsis",
+      "icon": "favicon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false,
+      "installerIcon": "favicon.ico",
+      "uninstallerIcon": "favicon.ico",
+      "artifactName": "OPTCG-Cevirici-Setup-${version}.${ext}"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Hypnology-Aeren",
+        "repo": "one-piece-tcg-translate"
+      }
+    ],
+    "files": [
+      "**/*",
+      "!optcg-cevirici/**",
+      "!optcg-cevirici.zip",
+      "!dist/**"
+    ]
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  },
+  "devDependencies": {
+    "electron": "^41.3.0",
+    "electron-builder": "^26.8.1"
+  }
+}
