@@ -1,0 +1,17 @@
+{
+  "name": "OPTCG Çevirici",
+  "short_name": "OPTCG",
+  "description": "One Piece TCG Kart Çeviri ve Rehber Uygulaması",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#f97316",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/Hypnology-Aeren/one-piece-tcg-translate/main/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

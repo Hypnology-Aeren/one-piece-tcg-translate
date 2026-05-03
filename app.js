@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupSearch();
     setupModal();
     setupViewToggle();
+    setupGuide();
     
     await loadDatabase();
     loadSets();
@@ -456,4 +457,192 @@ function showToast(message) {
     toast.textContent = message;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+}
+
+// ===== GUIDE (TUTORIAL) =====
+const guideSteps = [
+    {
+        title: "1. Hazırlık ve Desteler",
+        desc: "Oyuna başlamak için 1 Lider kartı, tam 50 kartlık bir Ana Deste ve 10 kartlık bir DON!! destesine ihtiyacınız vardır. Her iki oyuncu da destesini karıştırır, Liderini alana koyar. Ardından desteden 5 kart çekilir. İsterseniz bu 5 kartı destenize geri karıştırıp yeni bir 5 kart çekebilirsiniz (Mulligan). Son olarak Liderinizin can değeri kadar kartı destenizin en üstünden kapalı şekilde 'Can Alanı'na yerleştirirsiniz.",
+        highlightZones: ["zone-leader", "zone-deck", "zone-don-deck", "zone-life"]
+    },
+    {
+        title: "2. Oyun Alanı (Playmat)",
+        desc: "Oyun masası 6 ana bölgeden oluşur: Lider, Karakter Alanı (en fazla 5 karakter), Can Alanı, Deste & Çöplük, DON!! Destesi ve DON!! Maliyet Alanı (oynadığınız DON'ların durduğu yer). Ayrıca Sahne (Stage) kartları için ayrılmış özel bir alan bulunur.",
+        highlightZones: ["zone-character", "zone-leader", "zone-stage", "zone-deck", "zone-trash", "zone-don-deck", "zone-cost", "zone-life"]
+    },
+    {
+        title: "3. Kart Tipleri",
+        desc: "Dört temel kart vardır: Lider (Oyunun kalbi), Karakterler (Saldırır ve savunur), Olaylar/Event (Oynandığı an etkisini gösterip çöpe gider) ve Sahneler/Stage (Alana kalıcı olarak yerleşir). DON!! kartları ise maliyetleri ödemek ve karakterleri güçlendirmek için kullanılan mananızdır.",
+        highlightZones: []
+    },
+    {
+        title: "4. Tur Aşaması 1: Refresh & Draw",
+        desc: "Sıranız başladığında öncelikle 'Refresh Phase' gerçekleşir: Oyun alanınızda daha önce kullandığınız için yan çevrilmiş (Rested) tüm Karakterlerinizi ve DON!! kartlarınızı düz (Active) pozisyona getirirsiniz. Karakterlere eklenmiş DON!! kartları Maliyet alanına geri döner. Ardından 'Draw Phase' gelir ve destenizin en üstünden 1 kart çekersiniz. (Oyuna ilk başlayan oyuncu ilk turunda kart ÇEKEMEZ).",
+        highlightZones: ["zone-deck", "zone-cost", "zone-character"]
+    },
+    {
+        title: "5. Tur Aşaması 2: DON!! Phase",
+        desc: "Her tur DON!! destenizin en üstünden 2 adet DON!! kartı çeker ve 'Maliyet Alanı'na (Cost Area) düz (Active) olarak koyarsınız. Bu sizin bütçenizdir. (Oyuna ilk başlayan oyuncu ilk turunda sadece 1 DON!! kartı çeker). Maksimum 10 DON!! kartına sahip olabilirsiniz.",
+        highlightZones: ["zone-don-deck", "zone-cost"]
+    },
+    {
+        title: "6. Ana Aşama (Main Phase)",
+        desc: "Bu aşamada aktif olan DON!! kartlarınızı yan çevirerek (Rested) bedelini ödeyip elinizden Karakter, Olay veya Sahne kartı oynayabilirsiniz. Ayrıca DON!! kartlarını Liderinize veya Karakterlerinize ekleyerek onlara +1000 Power (Güç) kazandırabilirsiniz.",
+        highlightZones: ["zone-character", "zone-leader", "zone-cost"]
+    },
+    {
+        title: "7. Savaş ve Saldırı",
+        desc: "Saldırmak için düz duran (Active) Liderinizi veya bir Karakterinizi yan çevirirsiniz (Rested). Hedef olarak rakibin Liderini veya onun halihazırda 'Rested' pozisyonundaki bir Karakterini seçebilirsiniz. Güçleri (Power) karşılaştırılır. Saldıranın gücü eşit veya daha yüksekse, saldırı başarılı olur.",
+        highlightZones: ["zone-character", "zone-leader"]
+    },
+    {
+        title: "8. Savunma (Counter ve Blocker)",
+        desc: "Saldırıya uğrayan taraf hasar almamak için elindeki kartları çöpe atarak üzerlerinde yazan 'Counter' değeri kadar geçici güç kazanabilir. Ayrıca alanında 'Blocker' özelliği olan bir karakter varsa, onu yan çevirip saldırıyı kendi üzerine çekebilir.",
+        highlightZones: ["zone-character", "zone-trash"]
+    },
+    {
+        title: "9. Hasar Alma ve Trigger",
+        desc: "Eğer bir Lidere yapılan saldırı başarılı olursa, hasar alan lider Can Alanı'ndaki kapalı kartlarından en üsttekini eline alır. Eğer eline aldığı kartın üzerinde [Trigger] (Tetikleyici) yazıyorsa, kartın maliyetini ödemeden o anlık etkisini anında kullanabilir (örneğin rakip bir karakteri yok etme).",
+        highlightZones: ["zone-leader", "zone-life"]
+    },
+    {
+        title: "10. Bitiş Aşaması ve Kazanma",
+        desc: "Ana Aşamadaki hamleleriniz bittiğinde 'Sıram bitti' dersiniz ve sıra rakibe geçer. Oyunu kazanmanın koşulu şudur: Rakibinizin Can Alanı'nda hiç kart kalmamışken (yani 0 canı varken) Liderine başarılı bir saldırı daha yapmalısınız!",
+        highlightZones: ["zone-life", "zone-leader"]
+    }
+];
+
+let currentGuideStep = 0;
+const guideModal = document.getElementById("guideModal");
+const navGuide = document.getElementById("navGuide");
+const guideModalClose = document.getElementById("guideModalClose");
+const guidePrevBtn = document.getElementById("guidePrevBtn");
+const guideNextBtn = document.getElementById("guideNextBtn");
+const guideStepTitle = document.getElementById("guideStepTitle");
+const guideStepDesc = document.getElementById("guideStepDesc");
+const guideProgressContainer = document.getElementById("guideProgress");
+const allZones = document.querySelectorAll(".zone");
+
+let progressSteps = [];
+let progressLines = [];
+
+function setupGuide() {
+    navGuide.addEventListener("click", openGuide);
+    guideModalClose.addEventListener("click", closeGuide);
+    guideNextBtn.addEventListener("click", nextGuideStep);
+    guidePrevBtn.addEventListener("click", prevGuideStep);
+    
+    // Generate Progress Bar HTML dynamically
+    if(guideProgressContainer) {
+        guideProgressContainer.innerHTML = '';
+        for (let i = 0; i < guideSteps.length; i++) {
+            const stepDiv = document.createElement("div");
+            stepDiv.className = "progress-step";
+            stepDiv.textContent = i + 1;
+            guideProgressContainer.appendChild(stepDiv);
+            
+            if (i < guideSteps.length - 1) {
+                const lineDiv = document.createElement("div");
+                lineDiv.className = "progress-line";
+                guideProgressContainer.appendChild(lineDiv);
+            }
+        }
+        progressSteps = document.querySelectorAll(".progress-step");
+        progressLines = document.querySelectorAll(".progress-line");
+    }
+
+    // Check if first time
+    if (!localStorage.getItem("optcg_guide_seen")) {
+        setTimeout(() => {
+            openGuide();
+            localStorage.setItem("optcg_guide_seen", "true");
+        }, 1000);
+    }
+}
+
+function openGuide() {
+    currentGuideStep = 0;
+    updateGuideUI();
+    guideModal.classList.add("active");
+    document.body.style.overflow = "hidden";
+}
+
+function closeGuide() {
+    guideModal.classList.remove("active");
+    document.body.style.overflow = "";
+}
+
+function nextGuideStep() {
+    if (currentGuideStep < guideSteps.length - 1) {
+        currentGuideStep++;
+        updateGuideUI();
+    } else {
+        closeGuide();
+    }
+}
+
+function prevGuideStep() {
+    if (currentGuideStep > 0) {
+        currentGuideStep--;
+        updateGuideUI();
+    }
+}
+
+function updateGuideUI() {
+    const step = guideSteps[currentGuideStep];
+    
+    // Update Text
+    guideStepTitle.textContent = step.title;
+    guideStepDesc.textContent = step.desc;
+    
+    // Update Buttons
+    guidePrevBtn.disabled = currentGuideStep === 0;
+    if (currentGuideStep === guideSteps.length - 1) {
+        guideNextBtn.textContent = "Rehberi Kapat";
+        guideNextBtn.style.background = "var(--green)";
+    } else {
+        guideNextBtn.textContent = "Sonraki Adım";
+        guideNextBtn.style.background = "var(--accent)";
+    }
+    
+    // Update Progress Bar
+    progressSteps.forEach((el, idx) => {
+        if (idx < currentGuideStep) {
+            el.className = "progress-step completed";
+        } else if (idx === currentGuideStep) {
+            el.className = "progress-step active";
+        } else {
+            el.className = "progress-step";
+        }
+    });
+    
+    progressLines.forEach((el, idx) => {
+        if (idx < currentGuideStep) {
+            el.className = "progress-line completed";
+        } else {
+            el.className = "progress-line";
+        }
+    });
+    
+    // Highlight Zones
+    let firstHighlightedZone = null;
+    allZones.forEach(zone => {
+        if (step.highlightZones.includes(zone.id)) {
+            zone.classList.add("highlight");
+            if (!firstHighlightedZone) firstHighlightedZone = zone;
+        } else {
+            zone.classList.remove("highlight");
+        }
+    });
+
+    // Auto-scroll to highlight on mobile
+    if (firstHighlightedZone && window.innerWidth <= 768) {
+        const container = document.querySelector(".playmat-container");
+        const scrollX = firstHighlightedZone.offsetLeft - (container.offsetWidth / 2) + (firstHighlightedZone.offsetWidth / 2);
+        container.scrollTo({
+            left: scrollX,
+            behavior: 'smooth'
+        });
+    }
 }

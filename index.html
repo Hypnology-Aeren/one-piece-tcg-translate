@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OPTCG Kart Çevirici - One Piece TCG Simulator</title>
-    <meta name="description" content="One Piece TCG Simulator için kart çevirme ve Türkçe çeviri uygulaması. Kartları arayın, efektlerini Türkçe olarak görüntüleyin.">
+    <meta name="description"
+        content="One Piece TCG Simulator için kart çevirme ve Türkçe çeviri uygulaması. Kartları arayın, efektlerini Türkçe olarak görüntüleyin.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f97316">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Hypnology-Aeren/one-piece-tcg-translate/main/favicon.ico">
 </head>
+
 <body>
     <!-- Animated background particles -->
     <div class="bg-particles" id="bgParticles"></div>
@@ -20,15 +30,17 @@
             <div class="logo-section">
                 <div class="logo-icon">
                     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="24" cy="24" r="22" stroke="url(#logoGrad)" stroke-width="3" fill="none"/>
-                        <path d="M16 20C16 20 20 28 24 28C28 28 32 20 32 20" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/>
-                        <circle cx="18" cy="18" r="2" fill="url(#logoGrad)"/>
-                        <circle cx="30" cy="18" r="2" fill="url(#logoGrad)"/>
-                        <path d="M24 2L24 8M24 40L24 46M2 24L8 24M40 24L46 24" stroke="url(#logoGrad)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                        <circle cx="24" cy="24" r="22" stroke="url(#logoGrad)" stroke-width="3" fill="none" />
+                        <path d="M16 20C16 20 20 28 24 28C28 28 32 20 32 20" stroke="url(#logoGrad)" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <circle cx="18" cy="18" r="2" fill="url(#logoGrad)" />
+                        <circle cx="30" cy="18" r="2" fill="url(#logoGrad)" />
+                        <path d="M24 2L24 8M24 40L24 46M2 24L8 24M40 24L46 24" stroke="url(#logoGrad)"
+                            stroke-width="1.5" stroke-linecap="round" opacity="0.5" />
                         <defs>
                             <linearGradient id="logoGrad" x1="0" y1="0" x2="48" y2="48">
-                                <stop offset="0%" stop-color="#f97316"/>
-                                <stop offset="100%" stop-color="#ef4444"/>
+                                <stop offset="0%" stop-color="#f97316" />
+                                <stop offset="100%" stop-color="#ef4444" />
                             </linearGradient>
                         </defs>
                     </svg>
@@ -41,22 +53,34 @@
             <nav class="header-nav">
                 <button class="nav-btn active" data-view="search" id="navSearch">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
                     </svg>
                     Ara
                 </button>
                 <button class="nav-btn" data-view="sets" id="navSets">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
                     </svg>
                     Setler
                 </button>
                 <button class="nav-btn" data-view="favorites" id="navFavorites">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
                     Favoriler
+                </button>
+                <button class="nav-btn" id="navGuide">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Nasıl Oynanır?
                 </button>
             </nav>
             <div class="header-stats">
@@ -76,22 +100,23 @@
                 <h2 class="hero-title">
                     <span class="gradient-text">Kartını Bul</span>, Çevirisini Gör
                 </h2>
-                <p class="hero-subtitle">Kart ID veya ismi ile arama yapın — efektler otomatik olarak Türkçe'ye çevrilir</p>
+                <p class="hero-subtitle">Kart ID veya ismi ile arama yapın — efektler otomatik olarak Türkçe'ye çevrilir
+                </p>
                 <div class="search-container" id="searchContainer">
                     <div class="search-input-wrapper">
-                        <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
                         </svg>
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="Kart ID (ör: OP01-001) veya isim (ör: Luffy)..." 
-                            autocomplete="off"
-                            spellcheck="false"
-                        >
+                        <input type="text" id="searchInput"
+                            placeholder="Kart ID (ör: OP01-001) veya isim (ör: Luffy)..." autocomplete="off"
+                            spellcheck="false">
                         <button class="search-clear-btn" id="searchClearBtn" style="display:none;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
                             </svg>
                         </button>
                     </div>
@@ -125,17 +150,23 @@
                     <span class="results-count" id="resultsCount"></span>
                     <div class="results-view-toggle">
                         <button class="view-toggle-btn active" data-grid="grid" id="gridViewBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                                <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7" />
+                                <rect x="14" y="3" width="7" height="7" />
+                                <rect x="3" y="14" width="7" height="7" />
+                                <rect x="14" y="14" width="7" height="7" />
                             </svg>
                         </button>
                         <button class="view-toggle-btn" data-grid="list" id="listViewBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
-                                <line x1="8" y1="18" x2="21" y2="18"/>
-                                <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
-                                <line x1="3" y1="18" x2="3.01" y2="18"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
                             </svg>
                         </button>
                     </div>
@@ -147,8 +178,10 @@
                 </div>
                 <div class="empty-state" id="emptyState">
                     <div class="empty-icon">
-                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
-                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1" opacity="0.3">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
                         </svg>
                     </div>
                     <h3>Kart aramaya başlayın</h3>
@@ -162,8 +195,10 @@
             <div class="section-header">
                 <h2 class="section-title">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
                     </svg>
                     Kart Setleri
                 </h2>
@@ -182,7 +217,8 @@
             <div class="section-header">
                 <h2 class="section-title">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
                     Favori Kartlarım
                 </h2>
@@ -191,8 +227,10 @@
             <div class="cards-grid" id="favoritesGrid"></div>
             <div class="empty-state" id="favoritesEmpty">
                 <div class="empty-icon">
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                        opacity="0.3">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
                 </div>
                 <h3>Henüz favori kartınız yok</h3>
@@ -206,15 +244,18 @@
         <div class="modal-content" id="modalContent">
             <button class="modal-close" id="modalClose">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
             </button>
             <div class="modal-body">
                 <div class="modal-card-image">
                     <img id="modalCardImage" src="" alt="Kart Görseli">
                     <button class="favorite-btn modal-fav-btn" id="modalFavBtn">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                         </svg>
                     </button>
                 </div>
@@ -225,7 +266,7 @@
                     </div>
                     <h2 class="modal-card-name" id="modalCardName"></h2>
                     <div class="modal-card-name-tr" id="modalCardNameTr"></div>
-                    
+
                     <div class="modal-stats-grid">
                         <div class="modal-stat" id="modalColorStat">
                             <span class="stat-label-text">Renk</span>
@@ -261,8 +302,11 @@
                     <div class="modal-effect-section">
                         <div class="effect-header">
                             <h3>
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                    <path d="M2 17l10 5 10-5" />
+                                    <path d="M2 12l10 5 10-5" />
                                 </svg>
                                 Kart Efekti
                             </h3>
@@ -274,9 +318,10 @@
                             <p id="modalEffectEn"></p>
                         </div>
                         <div class="effect-divider">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <polyline points="19 12 12 19 5 12"/>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <polyline points="19 12 12 19 5 12" />
                             </svg>
                         </div>
                         <div class="effect-box translated" id="modalEffectTranslated">
@@ -300,14 +345,66 @@
         </div>
     </div>
 
+    <!-- Guide Modal (How to Play) -->
+    <div class="modal-overlay guide-overlay" id="guideModal">
+        <div class="guide-modal-content">
+            <button class="modal-close" id="guideModalClose">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+
+            <div class="guide-header">
+                <h2>Nasıl Oynanır?</h2>
+                <div class="guide-progress" id="guideProgress">
+                    <!-- Progress steps will be injected by app.js -->
+                </div>
+            </div>
+
+            <div class="guide-body">
+                <div class="playmat-container">
+                    <div class="playmat">
+                        <div class="playmat-row">
+                            <div class="zone zone-character" id="zone-character">Karakter Alanı</div>
+                            <div class="zone zone-leader" id="zone-leader">Lider</div>
+                            <div class="zone zone-stage" id="zone-stage">Sahne</div>
+                        </div>
+                        <div class="playmat-row">
+                            <div class="zone zone-deck" id="zone-deck">Deste</div>
+                            <div class="zone zone-trash" id="zone-trash">Çöplük</div>
+                            <div class="zone zone-don-deck" id="zone-don-deck">DON!!<br>Destesi</div>
+                            <div class="zone zone-cost" id="zone-cost">Maliyet Alanı<br>(DON!!)</div>
+                            <div class="zone zone-life" id="zone-life">Can<br>Alanı</div>
+                        </div>
+
+                        <!-- Animated elements for tutorial -->
+                        <div class="anim-card" id="animCard"></div>
+                    </div>
+                </div>
+
+                <div class="guide-info-panel">
+                    <h3 id="guideStepTitle">1. Refresh Aşaması (Aktifleştirme)</h3>
+                    <p id="guideStepDesc">Sıranız başladığında, oyun alanınızdaki tüm dinlenen (yan çevrilmiş)
+                        kartlarınızı ve DON!! kartlarınızı tekrar aktif (düz) hale getirirsiniz.</p>
+                </div>
+            </div>
+
+            <div class="guide-footer">
+                <button class="guide-btn btn-prev" id="guidePrevBtn" disabled>Önceki Adım</button>
+                <button class="guide-btn btn-next" id="guideNextBtn">Sonraki Adım</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Update Notification Banner -->
     <div class="update-banner" id="updateBanner" style="display:none;">
         <div class="update-banner-content">
             <div class="update-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
             </div>
             <div class="update-info">
@@ -326,7 +423,8 @@
                 </button>
                 <button class="update-btn update-btn-dismiss" id="updateDismissBtn" onclick="dismissUpdate()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                 </button>
             </div>
@@ -343,5 +441,15 @@
 
     <script src="app.js"></script>
     <script src="updater.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registered!', reg))
+                    .catch(err => console.log('SW failed!', err));
+            });
+        }
+    </script>
 </body>
+
 </html>
