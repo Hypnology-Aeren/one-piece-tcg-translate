@@ -74,6 +74,13 @@
                     </svg>
                     Favoriler
                 </button>
+                <button class="nav-btn" data-view="deck" id="navDeck">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <line x1="3" y1="9" x2="21" y2="9" />
+                    </svg>
+                    Deste
+                </button>
                 <button class="nav-btn" id="navGuide">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10" />
@@ -235,6 +242,81 @@
                 </div>
                 <h3>Henüz favori kartınız yok</h3>
                 <p>Kartların üzerindeki kalp ikonuna tıklayarak favorilere ekleyin</p>
+            </div>
+        </section>
+
+        <!-- Deck View -->
+        <section class="view-section" id="deckView">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <line x1="3" y1="9" x2="21" y2="9" />
+                    </svg>
+                    Deste Düzenleyici
+                </h2>
+                <p class="section-subtitle">Deste listenizi yapıştırın ve kartları anında görüntüleyin</p>
+            </div>
+            
+            <div class="deck-container">
+                <div class="deck-left-panel">
+                    <div class="saved-decks-wrapper">
+                        <div class="saved-decks-header">
+                            <h3 class="panel-title">Kayıtlı Desteler</h3>
+                            <button class="deck-btn-icon" id="deckNewBtn" title="Yeni Deste">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="saved-decks-list" id="savedDecksList"></div>
+                    </div>
+
+                    <div class="deck-input-section">
+                        <input type="text" id="deckNameInput" class="deck-name-input" placeholder="Deste Adı (örn: Sarı Enel)">
+                        <textarea id="deckInput" class="deck-textarea" placeholder="Deste listenizi buraya yapıştırın...&#10;Örnek:&#10;1 OP15-058 Enel&#10;4 OP12-071 Charlotte Pudding&#10;4 OP15-061 Ohm"></textarea>
+                        <div class="deck-actions">
+                            <button class="deck-btn deck-btn-secondary" id="deckSaveBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Kaydet
+                            </button>
+                            <button class="deck-btn deck-btn-primary" id="deckParseBtn">Desteyi Yükle</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="deck-results">
+                    <div class="deck-stats" id="deckStats" style="display:none;">
+                        <span>Toplam Kart: <span id="deckTotalCards">0</span></span>
+                    </div>
+                    
+                    <div class="deck-add-section" id="deckAddSection">
+                        <div class="deck-add-input-wrapper">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.35-4.35" />
+                            </svg>
+                            <input type="text" id="deckAddInput" placeholder="Desteye eklemek için Kart ID veya İsim arayın..." autocomplete="off">
+                        </div>
+                        <div class="deck-add-results" id="deckAddResults" style="display:none;"></div>
+                    </div>
+
+                    <div class="cards-grid" id="deckGrid"></div>
+                    <div class="empty-state" id="deckEmpty">
+                        <div class="empty-icon">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <line x1="3" y1="9" x2="21" y2="9" />
+                            </svg>
+                        </div>
+                        <h3>Deste Bulunmuyor</h3>
+                        <p>Yukarıdaki alana deste listenizi yapıştırarak başlayın</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

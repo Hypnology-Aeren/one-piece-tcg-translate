@@ -12,21 +12,20 @@
     "appId": "com.optcg.cevirici",
     "productName": "OPTCG Çevirici",
     "win": {
-      "target": "nsis",
-      "icon": "favicon.ico"
+      "target": "nsis"
     },
     "nsis": {
       "oneClick": true,
       "allowToChangeInstallationDirectory": false,
-      "installerIcon": "favicon.ico",
-      "uninstallerIcon": "favicon.ico",
       "artifactName": "OPTCG-Cevirici-Setup-${version}.${ext}"
     },
     "publish": [
       {
         "provider": "github",
         "owner": "Hypnology-Aeren",
-        "repo": "one-piece-tcg-translate"
+        "repo": "one-piece-tcg-translate",
+        "draft": false,
+        "prerelease": false
       }
     ],
     "files": [

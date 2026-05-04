@@ -6,6 +6,8 @@ let cardDb = {};
 let allCards = [];
 let filteredCards = [];
 let favorites = JSON.parse(localStorage.getItem("optcg_favorites") || "[]");
+let savedDecks = JSON.parse(localStorage.getItem("optcg_saved_decks") || "[]");
+let currentDeckId = null;
 let currentView = "search";
 let currentViewMode = "grid";
 let setsLoaded = false;
@@ -36,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupModal();
     setupViewToggle();
     setupGuide();
+    setupDeck();
     
     await loadDatabase();
     loadSets();
@@ -457,6 +460,343 @@ function showToast(message) {
     toast.textContent = message;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+}
+
+// ===== DECK =====
+function setupDeck() {
+    const deckParseBtn = document.getElementById("deckParseBtn");
+    const deckSaveBtn = document.getElementById("deckSaveBtn");
+    const deckNewBtn = document.getElementById("deckNewBtn");
+    
+    if (deckParseBtn) deckParseBtn.addEventListener("click", parseDeck);
+    if (deckSaveBtn) deckSaveBtn.addEventListener("click", saveDeck);
+    if (deckNewBtn) deckNewBtn.addEventListener("click", newDeck);
+    
+    setupDeckAddSearch();
+    renderSavedDecks();
+}
+
+function newDeck() {
+    document.getElementById("deckNameInput").value = "";
+    document.getElementById("deckInput").value = "";
+    document.getElementById("deckGrid").innerHTML = "";
+    document.getElementById("deckStats").style.display = "none";
+    document.getElementById("deckEmpty").style.display = "block";
+    currentDeckId = null;
+    
+    document.querySelectorAll(".saved-deck-item").forEach(item => item.classList.remove("active"));
+}
+
+function saveDeck() {
+    const nameInput = document.getElementById("deckNameInput").value.trim();
+    const contentInput = document.getElementById("deckInput").value.trim();
+    
+    if (!contentInput) {
+        showToast("Kaydedilecek bir deste bulunmuyor.");
+        return;
+    }
+    
+    const deckName = nameInput || "İsimsiz Deste";
+    
+    if (currentDeckId) {
+        const deckIndex = savedDecks.findIndex(d => d.id === currentDeckId);
+        if (deckIndex > -1) {
+            savedDecks[deckIndex].name = deckName;
+            savedDecks[deckIndex].content = contentInput;
+            savedDecks[deckIndex].updatedAt = new Date().toISOString();
+        }
+    } else {
+        const newDeckObj = {
+            id: 'deck_' + Date.now(),
+            name: deckName,
+            content: contentInput,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        savedDecks.unshift(newDeckObj);
+        currentDeckId = newDeckObj.id;
+    }
+    
+    localStorage.setItem("optcg_saved_decks", JSON.stringify(savedDecks));
+    showToast(`"${deckName}" kaydedildi.`);
+    renderSavedDecks();
+    parseDeck();
+}
+
+function loadDeck(id) {
+    const deck = savedDecks.find(d => d.id === id);
+    if (!deck) return;
+    
+    currentDeckId = deck.id;
+    document.getElementById("deckNameInput").value = deck.name;
+    document.getElementById("deckInput").value = deck.content;
+    
+    renderSavedDecks();
+    parseDeck();
+}
+
+function deleteDeck(id, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    if (!confirm("Bu desteyi silmek istediğinize emin misiniz?")) return;
+    
+    savedDecks = savedDecks.filter(d => d.id !== id);
+    localStorage.setItem("optcg_saved_decks", JSON.stringify(savedDecks));
+    
+    if (currentDeckId === id) {
+        newDeck();
+    }
+    
+    renderSavedDecks();
+    showToast("Deste silindi.");
+}
+
+function renderSavedDecks() {
+    const list = document.getElementById("savedDecksList");
+    if (!list) return;
+    
+    if (savedDecks.length === 0) {
+        list.innerHTML = `<div style="padding: 10px; color: var(--text-muted); font-size: 0.85rem; text-align: center;">Henüz kayıtlı deste yok.</div>`;
+        return;
+    }
+    
+    list.innerHTML = savedDecks.map(deck => {
+        const date = new Date(deck.updatedAt || deck.createdAt).toLocaleDateString("tr-TR");
+        const isActive = currentDeckId === deck.id ? "active" : "";
+        return `
+            <div class="saved-deck-item ${isActive}" onclick="loadDeck('${deck.id}')">
+                <div class="saved-deck-info">
+                    <span class="saved-deck-name">${deck.name}</span>
+                    <span class="saved-deck-date">${date}</span>
+                </div>
+                <div class="saved-deck-actions">
+                    <button class="saved-deck-delete" onclick="deleteDeck('${deck.id}', event)" title="Sil">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function parseDeck() {
+    const deckInput = document.getElementById("deckInput");
+    const deckGrid = document.getElementById("deckGrid");
+    const deckEmpty = document.getElementById("deckEmpty");
+    const deckStats = document.getElementById("deckStats");
+    const deckTotalCards = document.getElementById("deckTotalCards");
+    
+    const text = deckInput.value.trim();
+    if (!text) return;
+    
+    // Parse the lines
+    const lines = text.split("\n");
+    const deckCards = [];
+    let totalCards = 0;
+    
+    for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+        
+        // Try to match standard format: quantity [spaces] ID [spaces] Name
+        // e.g., 4 OP15-061 Ohm
+        // Or 1x OP15-058 Enel
+        const match = line.match(/^(\d+)x?\s+([A-Z0-9]+-[0-9]+)\s*(.*)/i);
+        if (match) {
+            const quantity = parseInt(match[1]);
+            const cardId = match[2].toUpperCase();
+            const name = match[3];
+            
+            deckCards.push({
+                quantity,
+                cardId,
+                name
+            });
+            totalCards += quantity;
+        } else {
+            // Check if it's just ID format like "OP15-061" without quantity
+            const idMatch = line.match(/([A-Z0-9]+-[0-9]+)/i);
+            if (idMatch) {
+                deckCards.push({
+                    quantity: 1,
+                    cardId: idMatch[1].toUpperCase(),
+                    name: ""
+                });
+                totalCards += 1;
+            }
+        }
+    }
+    
+    if (deckCards.length === 0) {
+        showToast("Geçerli bir deste formatı bulunamadı.");
+        return;
+    }
+    
+    renderDeckCards(deckCards);
+    deckTotalCards.textContent = totalCards;
+    deckStats.style.display = "block";
+    deckEmpty.style.display = "none";
+}
+
+function changeDeckCardQty(cardId, delta) {
+    const deckInput = document.getElementById("deckInput");
+    const text = deckInput.value.trim();
+    
+    if (!text && delta > 0) {
+        deckInput.value = `1 ${cardId}`;
+        parseDeck();
+        return;
+    }
+    
+    let lines = text.split("\n");
+    let found = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (!line) continue;
+        
+        // Match standard format: "4 OP15-061 Ohm"
+        const match = line.match(/^(\d+)x?\s+([A-Z0-9]+-[0-9]+)\s*(.*)/i);
+        if (match && match[2].toUpperCase() === cardId.toUpperCase()) {
+            let qty = parseInt(match[1]) + delta;
+            if (qty <= 0) {
+                lines.splice(i, 1);
+                i--; // adjust index after splice
+            } else {
+                lines[i] = `${qty} ${cardId} ${match[3]}`.trim();
+            }
+            found = true;
+            break;
+        } else {
+            // Match ID only format: "OP15-061"
+            const idMatch = line.match(/^([A-Z0-9]+-[0-9]+)$/i);
+            if (idMatch && idMatch[1].toUpperCase() === cardId.toUpperCase()) {
+                let qty = 1 + delta;
+                if (qty <= 0) {
+                    lines.splice(i, 1);
+                    i--;
+                } else {
+                    const card = cardDb[cardId];
+                    lines[i] = `${qty} ${cardId} ${card ? card.name : ''}`.trim();
+                }
+                found = true;
+                break;
+            }
+        }
+    }
+    
+    if (!found && delta > 0) {
+        const card = cardDb[cardId];
+        lines.push(`1 ${cardId} ${card ? card.name : ''}`.trim());
+    }
+    
+    deckInput.value = lines.join("\n");
+    parseDeck();
+    
+    // Auto save if an existing deck is loaded
+    if (currentDeckId) {
+        saveDeck();
+    }
+}
+
+function setupDeckAddSearch() {
+    const addInput = document.getElementById("deckAddInput");
+    const resultsContainer = document.getElementById("deckAddResults");
+    
+    if (!addInput) return;
+    
+    let searchTimeout;
+    
+    addInput.addEventListener("input", () => {
+        const q = addInput.value.trim().toLowerCase();
+        
+        clearTimeout(searchTimeout);
+        if (!q) {
+            resultsContainer.style.display = "none";
+            return;
+        }
+        
+        searchTimeout = setTimeout(() => {
+            const results = allCards.filter(c => 
+                c.id.toLowerCase().includes(q) || 
+                c.name.toLowerCase().includes(q)
+            ).slice(0, 10);
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div style="padding: 10px; color: var(--text-muted); text-align: center;">Kart bulunamadı</div>';
+            } else {
+                resultsContainer.innerHTML = results.map(c => `
+                    <div class="deck-add-result-item" onclick="addCardToDeck('${c.id}')">
+                        <img class="deck-add-result-img" src="${c.image || `https://optcgapi.com/media/static/Card_Images/${c.id}.jpg`}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 250 350%22><rect fill=%22%2316161f%22 width=%22250%22 height=%22350%22/></svg>'">
+                        <div class="deck-add-result-info">
+                            <span class="deck-add-result-name">${c.name}</span>
+                            <span class="deck-add-result-id">${c.id}</span>
+                        </div>
+                    </div>
+                `).join("");
+            }
+            resultsContainer.style.display = "block";
+        }, 300);
+    });
+    
+    // Hide results on outside click
+    document.addEventListener("click", (e) => {
+        if (!addInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.style.display = "none";
+        }
+    });
+}
+
+function addCardToDeck(cardId) {
+    changeDeckCardQty(cardId, 1);
+    document.getElementById("deckAddInput").value = "";
+    document.getElementById("deckAddResults").style.display = "none";
+    showToast("Kart desteye eklendi");
+}
+
+function renderDeckCards(deckCards) {
+    const deckGrid = document.getElementById("deckGrid");
+    
+    deckGrid.innerHTML = deckCards.map((deckCard, i) => {
+        const card = cardDb[deckCard.cardId] || { id: deckCard.cardId, name: deckCard.name };
+        const isFav = favorites.includes(card.id);
+        
+        return `
+        <div class="card-item deck-card-item" style="animation-delay: ${Math.min(i * 30, 600)}ms" 
+             onclick="openCardModal('${card.id}')">
+            <div class="deck-quantity-badge">
+                <button class="deck-qty-btn" onclick="event.stopPropagation(); changeDeckCardQty('${card.id}', -1)">-</button>
+                <span class="deck-qty-val">${deckCard.quantity}</span>
+                <button class="deck-qty-btn" onclick="event.stopPropagation(); changeDeckCardQty('${card.id}', 1)">+</button>
+            </div>
+            <div class="card-image-wrapper">
+                <div class="card-color-bar ${card.color || ''}"></div>
+                <img src="${card.image || `https://optcgapi.com/media/static/Card_Images/${card.id}.jpg`}" 
+                     alt="${card.name}" loading="lazy"
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 250 350%22><rect fill=%22%2316161f%22 width=%22250%22 height=%22350%22/><text fill=%22%23555%22 font-size=%2214%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22>Görsel Yok</text></svg>'">
+                <button class="card-favorite-btn ${isFav ? 'favorited' : ''}" 
+                        onclick="event.stopPropagation();toggleFavorite('${card.id}', this)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="card-info-section">
+                <div class="card-info-id">${card.id}</div>
+                <div class="card-info-name">${card.name || deckCard.name || "?"}</div>
+                <div class="card-info-meta">
+                    ${card.color_tr || card.color ? `<span class="meta-tag">${card.color_tr || card.color}</span>` : ""}
+                    ${card.type_tr || card.type ? `<span class="meta-tag">${card.type_tr || card.type}</span>` : ""}
+                </div>
+            </div>
+        </div>`;
+    }).join("");
 }
 
 // ===== GUIDE (TUTORIAL) =====
