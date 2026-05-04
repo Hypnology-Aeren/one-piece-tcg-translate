@@ -6,7 +6,12 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win --publish never",
-    "release": "electron-builder --win --publish always"
+    "release": "electron-builder --win --publish always",
+    "mobile:prep": "powershell -Command \"New-Item -ItemType Directory -Force -Path www; Copy-Item -Path index.html,app.js,styles.css,cards_tr.json,manifest.json,sw.js,translations.js,vazgec_cards.json -Destination www/ -ErrorAction SilentlyContinue\"",
+    "mobile:init": "npx cap init",
+    "mobile:add": "npx cap add android",
+    "mobile:sync": "npm run mobile:prep && npx cap sync android",
+    "mobile:open": "npm run mobile:prep && npx cap open android"
   },
   "build": {
     "appId": "com.optcg.cevirici",
@@ -36,10 +41,13 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "electron-updater": "^6.6.2"
+    "electron-updater": "^6.6.2",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0"
   },
   "devDependencies": {
     "electron": "^41.3.0",
-    "electron-builder": "^26.8.1"
+    "electron-builder": "^26.8.1",
+    "@capacitor/cli": "^6.0.0"
   }
 }

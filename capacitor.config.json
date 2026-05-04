@@ -1,0 +1,6 @@
+{
+  "appId": "com.optcg.cevirici",
+  "appName": "OPTCG Çevirici",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
