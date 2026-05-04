@@ -1,0 +1,197 @@
+[
+  {
+    "id": "OP03-081",
+    "en": "[On Play] Draw 2 cards and trash 2 cards from your hand. Then, give up to 1 of your opponent's Characters -2 cost during this turn.",
+    "tr": "[Oyunda] Elinizden 2 kart çekin ve 2 kartı çöpe atın. Ardından, bu tur sırasında rakibinizin en fazla 1 Karakterinin -2 bedelinden vazgeçin."
+  },
+  {
+    "id": "OP04-085",
+    "en": "[On Play] [When Attacking] If your Leader has the [Dressrosa] type, give up to 1 of your opponent's Characters -2 cost during this turn. Then, trash 1 card from the top of your deck.",
+    "tr": "[Oyunda] [Saldırı Sırasında] Lideriniz [Dressrosa] türüne sahipse, bu tur sırasında rakibinizin Karakterlerinden en fazla 1 tanesinin -2 bedelinden vazgeçin. Daha sonra destenizin üst kısmındaki 1 kartı çöpe atın."
+  },
+  {
+    "id": "OP05-006",
+    "en": "[On Play] If your Leader has the [Revolutionary Army] type, give up to 1 of your opponent's Characters -3000 power during this turn.",
+    "tr": "[Oyunda] Lideriniz [Devrimci Ordu] tipine sahipse, bu tur sırasında rakibinizin en fazla 1 Karakterinin -3000 gücünden vazgeçin."
+  },
+  {
+    "id": "OP05-099",
+    "en": "[On Your Opponent's Attack] You may rest this Character: Your opponent may trash 1 card from the top of their Life cards. If they do not, give up to 1 of your opponent's Leader or Character cards -2000 power during this turn.",
+    "tr": "[Rakibinizin Saldırısında] Bu Karakteri dinlendirebilirsiniz: Rakibiniz, Can kartlarının üst kısmındaki 1 kartı çöpe atabilir. Eğer bunu yapmazlarsa, bu tur sırasında rakibinizin Lider veya Karakter kartlarından en fazla 1 tanesini -2000 güçten vazgeçin."
+  },
+  {
+    "id": "OP07-096",
+    "en": "[Main] Draw 1 card. Then, if you have 10 or more cards in your trash, give up to 1 of your opponent's Characters -3 cost during this turn. [Trigger] K.O. up to 1 of your opponent's Characters with a cost of 3 or less.",
+    "tr": "[Ana] 1 kart çekin. Daha sonra, çöpünüzde 10 veya daha fazla kartınız varsa, bu tur sırasında rakibinizin Karakterlerinin en fazla 1 tanesinin -3 bedelinden vazgeçin. [Tetikleyici] K.O. 3 veya daha az maliyetle rakibinizin Karakterlerinden en fazla 1 tanesi."
+  },
+  {
+    "id": "OP08-018",
+    "en": "[Main] Up to 3 of your Characters gain +1000 power during this turn. Then, give up to 1 of your opponent's Characters 2000 power during this turn. [Trigger] Give up to 1 of your opponent's Leader or Character cards 3000 power during this turn.",
+    "tr": "[Ana] Bu tur sırasında en fazla 3 Karakteriniz +1000 güç kazanır. Ardından, bu tur sırasında rakibinizin en fazla 1 Karakterinin 2000 gücünden vazgeçin. [Tetikleyici] Bu tur sırasında rakibinizin Lider veya Karakter kartlarından en fazla 1 tanesine 3000 güç verin."
+  },
+  {
+    "id": "OP08-057",
+    "en": "[Activate:Main] [Once Per Turn] DON!! 2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Choose one: • If you have 5 or less cards in your hand, draw 1 card. • Give up to 1 of your opponent's Characters 2 cost during this turn.",
+    "tr": "[Etkinleştir:Ana] [Turda Bir Kez] DON!! 2 (Belirtilen sayıda DON!! kartını alanınızdan DON!! destenize iade edebilirsiniz.): Birini seçin: • Elinizde 5 veya daha az kart varsa, 1 kart çekin. • Bu tur sırasında rakibinizin en fazla 1 Karakterinin 2 bedelinden vazgeçin."
+  },
+  {
+    "id": "OP08-097",
+    "en": "[Main] If your Leader has the [Animal Kingdom Pirates] type, give up to 1 of your opponent's Characters 2 cost during this turn. Then, K.O. up to 1 of your opponent's Characters with a cost of 0. [Trigger] K.O. up to 1 of your opponent's Characters with a cost of 3 or less.",
+    "tr": "[Ana] Lideriniz [Hayvan Krallığı K.O.rsanları] türüne sahipse, bu tur sırasında rakibinizin Karakterlerinin 2 maliyetinden en fazla 1 tanesinden vazgeçin. Daha sonra K.Ö. 0 maliyetle en fazla 1 rakibinizin Karakteri. [Tetikleyici] K.O. 3 veya daha az maliyetle rakibinizin Karakterlerinden en fazla 1 tanesi."
+  },
+  {
+    "id": "OP03-098",
+    "en": "[Activate:Main] You may rest this Stage: If your Leader's type includes \"CP\", give up to 1 of your opponent's Characters -2 cost during this turn. [Trigger] Play this card.",
+    "tr": "[Activate:Ana] Bu Aşamada dinlenebilirsiniz: Liderinizin türü \"CP\" içeriyorsa, bu tur sırasında rakibinizin en fazla 1 Karakterinin -2 bedelinden vazgeçin. [Tetikleyici] Bu kartı oynayın."
+  },
+  {
+    "id": "OP02-009",
+    "en": "[On Play] If your Leader's type includes \"Whitebeard Pirates\", give up to 1 of your opponent's Characters -4000 power during this turn and add 1 card from the top of your Life cards to your hand.",
+    "tr": "[Oyunda] Liderinizin türü \"Beyazsakal K.O.rsanları\" içeriyorsa, bu tur sırasında rakibinizin en fazla 1 Karakterinden -4000 güçten vazgeçin ve Life kartlarınızın üst kısmından 1 kartı elinize ekleyin."
+  },
+  {
+    "id": "OP09-083",
+    "en": "[Activate: Main] You may rest this Character: If your Leader has the \"Blackbeard Pirates\" type, give up to 1 of your opponent's Characters 3 cost during this turn.\n[On K.O.] Draw 1 card.",
+    "tr": "[Etkinleştir: Ana] Bu Karakteri dinlendirebilirsiniz: Lideriniz \"Karasakal K.O.rsanları\" türüne sahipse, bu tur sırasında rakibinizin Karakterlerinin 3 maliyetinden en fazla 1 tanesinden vazgeçin.\n[K.O.'da] 1 kart çekin."
+  },
+  {
+    "id": "OP09-089",
+    "en": "[Activate: Main] You may trash 1 card from your hand and trash this Character: If your Leader has the \"Blackbeard Pirates\" type, draw 1 card. Then, give up to 1 of your opponent's Characters –2 cost during this turn.",
+    "tr": "[Etkinleştir: Ana] Elinizden 1 kartı çöpe atabilir ve bu Karakteri çöpe atabilirsiniz: Lideriniz \"Karasakal K.O.rsanları\" tipine sahipse, 1 kart çekin. Ardından, bu tur sırasında rakibinizin en fazla 1 Karakterinden –2 maliyetten vazgeçin."
+  },
+  {
+    "id": "OP09-011",
+    "en": "[Activate: Main] You may rest this Character: If your Leader has the \"Red-Haired Pirates\" type, give up to 1 of your opponent's Characters 2000 power during this turn.",
+    "tr": "[Etkinleştir: Ana] Bu Karakteri dinlendirebilirsiniz: Lideriniz \"Kızıl Saçlı K.O.rsanlar\" türüne sahipse, bu tur sırasında rakibinizin en fazla 1 Karakterinin 2000 gücünden vazgeçin."
+  },
+  {
+    "id": "OP10-119",
+    "en": "[On Play] Reveal up to 1 \"Supernovas\" type Character card from your hand and add it to the top of your Life cards face-down. Then, give up to 1 rested DON!! card to 1 of your \"Supernovas\" type Leader.",
+    "tr": "[Oyunda] Elinizden en fazla 1 \"Süpernova\" tipi Karakter kartı açın ve bunu yüzü aşağı bakacak şekilde Life kartlarınızın üstüne ekleyin. Daha sonra 1 adete kadar dinlenmiş DON'dan vazgeçin!! \"Süpernova\" tipi Liderinizden 1'ine kart verin."
+  },
+  {
+    "id": "OP10-009",
+    "en": "[On Play] If your Leader has the \"Punk Hazard\" type, give up to 1 of your opponent's Characters 3000 power during this turn.",
+    "tr": "[Oyunda] Lideriniz \"Punk Hazard\" türüne sahipse, bu tur sırasında rakibinizin en fazla 1 Karakterinin 3000 gücünden vazgeçin."
+  },
+  {
+    "id": "OP11-118",
+    "en": "[Rush]\n[When Attacking] You may trash 1 card from your hand: Return up to 1 Character with a cost of 4 or less to the owner's hand. Then, give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
+    "tr": "[Acele]\n[Saldırırken] Elinizden 1 kartı çöpe atabilirsiniz: 4 veya daha az maliyetle en fazla 1 Karakteri sahibinin eline iade edin. Daha sonra 1 adete kadar dinlenmiş DON'dan vazgeçin!! Liderinize veya Karakterlerinizden 1 tanesine kart."
+  },
+  {
+    "id": "OP11-008",
+    "en": "[Blocker]\n[On Play] You may trash 1 card from your hand: If your Leader has the \"Navy\" type, give up to 1 of your opponent's Characters 6000 power during this turn.",
+    "tr": "[Engelleyici]\n[Oyunda] Elinizden 1 kartı çöpe atabilirsiniz: Lideriniz \"Donanma\" türüne sahipse, bu tur sırasında rakibinizin en fazla 1 Karakterinin 6000 gücünden vazgeçin."
+  },
+  {
+    "id": "EB01-042",
+    "en": "[Activate:Main] You may trash this Character: Play up to 1 [Dressrosa] type Character card with a cost of 3 or less other than [Scarlet] from your hand rested. Then, give up to 1 of your opponent's Characters -2 cost during this turn.",
+    "tr": "[Etkinleştir:Ana] Bu Karakteri çöpe atabilirsiniz: Dinlenmiş elinizden [Scarlet] dışında maliyeti 3 veya daha az olan 1'e kadar [Dressrosa] tipi Karakter kartı oynayın. Ardından, bu tur sırasında rakibinizin en fazla 1 Karakterinin -2 bedelinden vazgeçin."
+  },
+  {
+    "id": "OP12-015",
+    "en": "If you have a total of 2 or more given DON!! cards, this Character gains +2000 power.\n[On Play] You may reveal 2 Events from your hand: Play up to 1 red Character card with 3000 power or less from your hand. Then, give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
+    "tr": "Toplamda 2 veya daha fazla DON almışsanız!! kartlarda bu Karakter +2000 güç kazanır.\n[Oyunda] Elinizden 2 EtkinliK.O.rtaya çıkarabilirsiniz: Elinizden 3000 veya daha az güce sahip 1 adete kadar kırmızı Karakter kartı oynayın. Daha sonra 1 adete kadar dinlenmiş DON'dan vazgeçin!! Liderinize veya Karakterlerinizden 1 tanesine kart."
+  },
+  {
+    "id": "OP12-031",
+    "en": "[On Play] Rest up to 1 of your opponent's Characters with a base cost of 6 or less. Then, give up to 3 rested DON!! cards to your [Roronoa Zoro] Leader.",
+    "tr": "[Oyunda] 6 veya daha az temel maliyetle rakibinizin en fazla 1 Karakterini dinlendirin. Daha sonra 3'e kadar dinlenmiş DON'dan vazgeçin!! [Roronoa Zoro] Liderinize kartlar."
+  },
+  {
+    "id": "OP12-026",
+    "en": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a base cost of 4 or less. Then, give up to 3 rested DON!! cards to your [Roronoa Zoro] Leader.",
+    "tr": "[Etkinleştir: Ana] Bu Karakteri dinlendirebilirsiniz: 4 veya daha az temel maliyetle rakibinizin en fazla 1 Karakterini dinlendirebilirsiniz. Daha sonra 3'e kadar dinlenmiş DON'dan vazgeçin!! [Roronoa Zoro] Liderinize kartlar."
+  },
+  {
+    "id": "PRB02-013",
+    "en": "[On Play] If your Leader has the \"Thriller Bark Pirates\" type, play up to 1 Character card with a cost of 4 or less from your trash rested. Then, give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
+    "tr": "[Oyunda] Lideriniz \"Thriller Bark Pirates\" tipine sahipse, çöp kutunuzdan 4 veya daha az maliyetli 1 Karakter kartına kadar oynayın. Daha sonra 1 adete kadar dinlenmiş DON'dan vazgeçin!! Liderinize veya Karakterlerinizden 1 tanesine kart."
+  },
+  {
+    "id": "ST14-007",
+    "en": "[On Play] / [When Attacking] If you have a Character with a cost of 8 or more, give up to 1 of your opponent's Characters -5 cost during this turn.",
+    "tr": "[Oyunda] / [Saldırı Sırasında] Eğer maliyeti 8 veya daha fazla olan bir Karakteriniz varsa, bu tur sırasında rakibinizin en fazla 1 Karakterinin -5 maliyetinden vazgeçin."
+  },
+  {
+    "id": "OP13-054",
+    "en": "[On Play] If you have 3 or less Life cards, draw 2 cards. Then, give up to 1 rested DON!! card to your Leader.",
+    "tr": "[Oyunda] 3 veya daha az Life kartınız varsa 2 kart çekin. Daha sonra 1 adete kadar dinlenmiş DON'dan vazgeçin!! Liderinize kart."
+  },
+  {
+    "id": "OP13-120",
+    "en": "[Blocker]\n[Activate: Main] [Once Per Turn] Up to 1 of your Characters gains +2 cost until the end of your opponent's next turn. Then, give up to 1 rested DON!! card to your Leader.",
+    "tr": "[Engelleyici]\n[Etkinleştir: Ana] [Tur Başına Bir Kez] Karakterlerinizden en fazla 1 tanesi, rakibinizin bir sonraki turunun sonuna kadar +2 maliyet kazanır. Daha sonra 1 adete kadar dinlenmiş DON'dan vazgeçin!! Liderinize kart."
+  },
+  {
+    "id": "OP13-100",
+    "en": "[Your Turn] [Once Per Turn] This effect can be activated when you play a Character with a [Trigger]. Give up to 2 rested DON!! cards to 1 of your Leader or Character cards.",
+    "tr": "[Sıranız] [Tur Başına Bir Kez] Bu efekt, bir Karakteri [Tetikleyici] ile oynadığınızda etkinleştirilebilir. 2'ye kadar dinlenmiş DON'dan vazgeçin!! Lider veya Karakter kartlarınızdan 1 tanesine kart ekleyin."
+  },
+  {
+    "id": "OP13-021",
+    "en": "[Main] Give up to 1 rested DON!! card to 1 of your [Monkey.D.Luffy] cards. Then, give up to 1 of your opponent's Characters 2000 power during this turn.\n[Trigger] Give up to 1 of your opponent's Characters 2000 power during this turn.",
+    "tr": "[Ana] 1 adete kadar dinlenmiş DON verin!! kartınızı [Monkey.D.Luffy] kartlarınızdan 1 tanesine ekleyin. Ardından, bu tur sırasında rakibinizin en fazla 1 Karakterinin 2000 gücünden vazgeçin.\n[Tetikleyici] Bu tur sırasında rakibinizin en fazla 1 Karakterine 2000 güç verin."
+  },
+  {
+    "id": "EB04-019",
+    "en": "[Main] You may rest 1 of your cards: If your Leader has the {Minks} type, give up to 1 of your opponent's Characters -3 cost during this turn.\n[Counter] Up to 1 of your {Minks} type Leader or Character cards gains +3000 power during this battle.",
+    "tr": "[Ana] Kartlarınızdan 1 tanesini dinlendirebilirsiniz: Lideriniz {Minks} tipine sahipse, bu tur sırasında rakibinizin en fazla 1 Karakterinin -3 bedelinden vazgeçin.\n[Sayaç] Bu savaş sırasında {Minks} tipi Lider veya Karakter kartlarınızdan en fazla 1 tanesi +3000 güç kazanır."
+  },
+  {
+    "id": "OP14-075",
+    "en": "[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it. Then, give up to 1 of your opponent's Characters 2000 power during this turn.",
+    "tr": "[K.O.'da] 1 DON'a kadar ekleyin!! DON'unuzdan kart!! güverteye K.O.yun ve dinlendirin. Ardından, bu tur sırasında rakibinizin en fazla 1 Karakterinin 2000 gücünden vazgeçin."
+  },
+  {
+    "id": "OP15-058",
+    "en": "Under the rules of this game, your DON!! deck consists of 6 cards.\n[Activate: Main] [Once Per Turn] If it is your second turn or later, add up to 1 DON!! card from your DON!! deck and set it as active, and add up to 4 additional DON!! cards and rest them. Then, give up to 4 rested DON!! cards to 1 of your Characters.",
+    "tr": "Bu oyunun kurallarına göre, DON'unuz!! deste 6 karttan oluşur.\n[Etkinleştir: Ana] [Tur Başına Bir Kez] İkinci sıranız veya daha sonraysa, 1 DON'a kadar ekleyin!! DON'unuzdan kart!! destesini aktif olarak ayarlayın ve 4'e kadar ek DON ekleyin!! Kartları çıkarın ve dinlendirin. Daha sonra 4'e kadar dinlenmiş DON'dan vazgeçin!! Karakterlerinizden 1'ine kartlar."
+  },
+  {
+    "id": "OP15-117",
+    "en": "[Main] Draw 1 card. Then, give up to 1 rested DON!! card to 1 of your {Sky Island} type Leader or Character cards.\n[Trigger] If your Leader has the {Sky Island} type, draw 2 cards.",
+    "tr": "[Ana] 1 kart çekin. Daha sonra 1 adete kadar dinlenmiş DON'dan vazgeçin!! {Sky Island} tipi Lider veya Karakter kartlarınızdan 1 tanesine kart ekleyin.\n[Tetikleyici] Lideriniz {Gökyüzü Adası} türüne sahipse 2 kart çekin."
+  },
+  {
+    "id": "OP15-072",
+    "en": "[Activate: Main] DON!! 2, You may rest this Character: If you have [Kotori] and [Satori], give up to 1 of your opponent's Characters 3000 power during this turn.",
+    "tr": "[Etkinleştir: Ana] YAPIN!! 2, Bu Karakteri dinlendirebilirsiniz: Eğer [K.O.tori] ve [Satori]'niz varsa, bu tur sırasında rakibinizin en fazla 1 Karakterinin 3000 gücünden vazgeçin."
+  },
+  {
+    "id": "ST06-015",
+    "en": "[Main] Draw 1 card. Then, give up to 1 of your opponent's Characters -2 cost during this turn. [Trigger] Your opponent chooses 1 card from their hand and trashes it.",
+    "tr": "[Ana] 1 kart çekin. Ardından, bu tur sırasında rakibinizin en fazla 1 Karakterinin -2 bedelinden vazgeçin. [Tetikleyici] Rakibiniz elinden 1 kart seçer ve onu çöpe atar."
+  },
+  {
+    "id": "ST06-017",
+    "en": "[On Play] Give up to 1 of your opponent's Characters -1 cost during this turn. [Activate:Main] You may rest this Stage: If your Leader has the [Navy] type, give up to 1 of your opponent's Characters -1 cost during this turn.",
+    "tr": "[Oyunda] Bu tur sırasında rakibinizin en fazla 1 Karakterinden -1 maliyet verin. [Activate:Ana] Bu Aşamada dinlenebilirsiniz: Lideriniz [Donanma] türüne sahipse, bu tur sırasında rakibinizin en fazla 1 Karakterinden -1 bedelinden vazgeçin."
+  },
+  {
+    "id": "ST15-004",
+    "en": "[On Play] If your Leader's type includes \"Whitebeard Pirates\", give up to 1 of your opponent's Characters 2000 power during this turn. Then, add 1 card from the top of your Life cards to your hand.",
+    "tr": "[Oyunda] Liderinizin türü \"Beyazsakal K.O.rsanları\" içeriyorsa, bu tur sırasında rakibinizin en fazla 1 Karakterinin 2000 gücünden vazgeçin. Daha sonra Life kartlarınızın üst kısmından 1 adet kartı elinize ekleyin."
+  },
+  {
+    "id": "ST17-004",
+    "en": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)[On Play] Look at 3 cards from the top of your deck and place them at the top or bottom of your deck in any order. Then, give up to 1 rested DON!! card to 1 of your \"The Seven Warlords of the Sea\" type Leader or Character cards.",
+    "tr": "[Engelleyici] (Rakibiniz bir saldırı ilan ettikten sonra, onu saldırının yeni hedefi yapmak için bu kartı bırakabilirsiniz.) [Oyunda] Destenizin üst kısmından 3 karta bakın ve bunları herhangi bir sırayla destenizin üstüne veya altına yerleştirin. Daha sonra 1 adete kadar dinlenmiş DON'dan vazgeçin!! \"Denizin Yedi Savaş Lordu\" tipi Lider veya Karakter kartlarınızdan 1 tanesine kart ekleyin."
+  },
+  {
+    "id": "ST27-002",
+    "en": "[Activate:Main] You may trash this Character: If your Leader has the \"Blackbeard Pirates\" type, give up to 1 of your opponent's Characters -1 cost during this turn.\n[On K.O.] Draw 1 card.",
+    "tr": "[Activate:Ana] Bu Karakteri çöpe atabilirsiniz: Lideriniz \"Karasakal K.O.rsanları\" türüne sahipse, bu tur sırasında rakibinizin en fazla 1 Karakterinin -1 bedelinden vazgeçin.\n[K.O.'da] 1 kart çekin."
+  },
+  {
+    "id": "ST19-003",
+    "en": "[On Play] If your Leader is [Smoker], give up to 1 of your opponent's Characters 4 cost during this turn.\n\n[Activate: Main] [Once Per Turn] If this Character was played on this turn, trash up to 1 of your opponent's Characters with a cost of 0.",
+    "tr": "[Oyunda] Lideriniz [Sigara İçen] ise, bu tur sırasında rakibinizin 4 Karakterinin en fazla 1 değerinden vazgeçin.\n\n[Etkinleştir: Ana] [Tur Başına Bir Kez] Bu Karakter bu tur oynandıysa, rakibinizin Karakterlerinden en fazla 1'ini 0 maliyetle çöpe atın."
+  },
+  {
+    "id": "ST29-015",
+    "en": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 1 or less Life cards, give up to 1 of your opponent's Leader or Character cards -2000 power during this turn.",
+    "tr": "[Sayaç] Bu savaş sırasında Lider veya Karakter kartlarınızdan en fazla 1 tanesi +2000 güç kazanır. Daha sonra, eğer 1 veya daha az Hayat kartınız varsa, bu tur sırasında rakibinizin Lider veya Karakter kartlarından en fazla 1 tanesini -2000 güçten vazgeçin."
+  }
+]

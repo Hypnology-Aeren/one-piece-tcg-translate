@@ -19,15 +19,13 @@
       "allowToChangeInstallationDirectory": false,
       "artifactName": "OPTCG-Cevirici-Setup-${version}.${ext}"
     },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "Hypnology-Aeren",
-        "repo": "one-piece-tcg-translate",
-        "draft": false,
-        "prerelease": false
-      }
-    ],
+    "publish": {
+      "provider": "github",
+      "owner": "Hypnology-Aeren",
+      "repo": "one-piece-tcg-translate",
+      "draft": false,
+      "prerelease": false
+    },
     "files": [
       "**/*",
       "!optcg-cevirici/**",
