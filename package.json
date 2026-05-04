@@ -23,8 +23,7 @@
       "provider": "github",
       "owner": "Hypnology-Aeren",
       "repo": "one-piece-tcg-translate",
-      "draft": false,
-      "prerelease": false
+      "releaseType": "release"
     },
     "files": [
       "**/*",

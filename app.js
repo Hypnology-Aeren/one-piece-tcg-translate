@@ -9,6 +9,15 @@ let favorites = JSON.parse(localStorage.getItem("optcg_favorites") || "[]");
 let savedDecks = JSON.parse(localStorage.getItem("optcg_saved_decks") || "[]");
 let currentDeckId = null;
 let currentView = "search";
+let deckLeaderColor = null; // Destenin lider rengi
+
+// ===== BANNED / RESTRICTED CARDS =====
+const BANNED_CARDS = []; // Şu an tamamen banlı kart yok
+const RESTRICTED_CARDS = []; // Şu an restricted kart yok
+const BANNED_PAIRS = [
+    { a: "OP07-115", b: "EB04-058" } // Banned Pair: Bu iki kart aynı destede bulunamaz
+];
+const MAX_DECK_SIZE = 51; // 1 Lider + 50 kart
 let currentViewMode = "grid";
 let setsLoaded = false;
 let allSets = [];
@@ -39,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupViewToggle();
     setupGuide();
     setupDeck();
-    
+
     await loadDatabase();
     loadSets();
 });
@@ -96,7 +105,7 @@ async function loadSets() {
         const sets = await setsRes.json();
         const sts = await stsRes.json();
         allSets = [...sets, ...sts.map(s => ({ set_name: s.deck_name || s.set_name, set_id: s.set_id || s.set_id }))];
-        
+
         // Populate set filter dropdown
         allSets.forEach(s => {
             const opt = document.createElement("option");
@@ -112,21 +121,73 @@ async function loadSets() {
 async function loadSetsView() {
     const setsGrid = document.getElementById("setsGrid");
     try {
-        setsGrid.innerHTML = allSets.map(s => `
-            <div class="set-card" data-set-id="${s.set_id}" onclick="loadSetCards('${s.set_id}', '${s.set_name.replace(/'/g, "\\'")}')">
-                <div class="set-card-id">${s.set_id}</div>
-                <div class="set-card-name">${s.set_name}</div>
-                <div class="set-card-arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"/>
-                    </svg>
+        const setMap = new Map();
+        for (const card of allCards) {
+            const idPrefix = (card.id || "").match(/^([A-Z]+\d+)/i);
+            if (idPrefix) {
+                const prefix = idPrefix[1].toUpperCase();
+                if (!setMap.has(prefix)) {
+                    setMap.set(prefix, { id: prefix, name: card.set_name || prefix, count: 0 });
+                }
+                setMap.get(prefix).count++;
+            }
+        }
+        const sortedSets = Array.from(setMap.values()).sort((a, b) => {
+            const aType = a.id.replace(/\d+/g, '');
+            const bType = b.id.replace(/\d+/g, '');
+            const aNum = parseInt(a.id.replace(/\D+/g, '')) || 0;
+            const bNum = parseInt(b.id.replace(/\D+/g, '')) || 0;
+            const typeOrder = { OP: 0, ST: 1, EB: 2, PRB: 3 };
+            const aOrder = typeOrder[aType] ?? 4;
+            const bOrder = typeOrder[bType] ?? 4;
+            if (aOrder !== bOrder) return aOrder - bOrder;
+            return bNum - aNum;
+        });
+        const groups = {};
+        const groupNames = { OP: "Booster Setler", ST: "Starter Desteler", EB: "Extra Booster", PRB: "Premium Booster" };
+        for (const set of sortedSets) {
+            const type = set.id.replace(/\d+/g, '');
+            const groupKey = groupNames[type] ? type : "OTHER";
+            if (!groups[groupKey]) groups[groupKey] = [];
+            groups[groupKey].push(set);
+        }
+        let html = '';
+        for (const [key, sets] of Object.entries(groups)) {
+            const groupName = groupNames[key] || "Diğer";
+            html += `<div class="sets-group-title">${groupName}</div>`;
+            html += sets.map(s => `
+                <div class="set-card" onclick="loadSetCardsByPrefix('${s.id}')">
+                    <div class="set-card-id">${s.id}</div>
+                    <div class="set-card-name">${s.name}</div>
+                    <div class="set-card-count">${s.count} kart</div>
+                    <div class="set-card-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </div>
                 </div>
-            </div>
-        `).join("");
+            `).join("");
+        }
+        setsGrid.innerHTML = html;
         setsLoaded = true;
     } catch (e) {
         setsGrid.innerHTML = `<p style="color:var(--text-muted);">Setler yüklenemedi.</p>`;
     }
+}
+
+function loadSetCardsByPrefix(prefix) {
+    switchView("search");
+    searchInput.value = "";
+    setFilter.value = "";
+    colorFilter.value = "";
+    typeFilter.value = "";
+    const results = allCards.filter(c => c.id && c.id.toUpperCase().startsWith(prefix));
+    filteredCards = results;
+    renderCards(results);
+    resultsCount.textContent = `${results.length} kart bulundu`;
+    resultsHeader.style.display = results.length > 0 ? "flex" : "none";
+    emptyState.style.display = results.length === 0 ? "block" : "none";
+    showToast(`📦 ${prefix} seti yüklendi (${results.length} kart)`);
 }
 
 async function loadSetCards(setId, setName) {
@@ -193,8 +254,8 @@ function searchCards(query, forceSetId = null) {
     let results = allCards;
 
     if (q) {
-        results = results.filter(c => 
-            c.id.toLowerCase().includes(q) || 
+        results = results.filter(c =>
+            c.id.toLowerCase().includes(q) ||
             c.name.toLowerCase().includes(q) ||
             (c.sub_types && c.sub_types.toLowerCase().includes(q))
         );
@@ -214,11 +275,11 @@ function searchCards(query, forceSetId = null) {
 
     filteredCards = results;
     renderCards(results);
-    
+
     resultsCount.textContent = `${results.length} kart bulundu`;
     resultsHeader.style.display = results.length > 0 ? "flex" : "none";
     emptyState.style.display = results.length === 0 ? "block" : "none";
-    
+
     if (results.length === 0) {
         emptyState.querySelector("h3").textContent = "Sonuç bulunamadı";
         emptyState.querySelector("p").textContent = "Farklı bir arama terimi veya filtre deneyin";
@@ -272,7 +333,7 @@ function setupModal() {
 
 async function openCardModal(cardId) {
     let card = cardDb[cardId];
-    
+
     // Fallback if not in local DB
     if (!card) {
         try {
@@ -281,7 +342,7 @@ async function openCardModal(cardId) {
                 const data = await res.json();
                 card = data[0];
             }
-        } catch {}
+        } catch { }
     }
 
     if (!card) return;
@@ -292,7 +353,7 @@ async function openCardModal(cardId) {
     document.getElementById("modalCardId").textContent = card.id || card.card_set_id;
     document.getElementById("modalRarity").textContent = card.rarity_tr || card.rarity;
     document.getElementById("modalCardName").textContent = card.name || card.card_name || "—";
-    
+
     // Color
     const colorVal = document.getElementById("modalColor");
     const colorStr = card.color || card.card_color;
@@ -327,7 +388,7 @@ async function openCardModal(cardId) {
     const effectTr = document.getElementById("modalEffectTr");
     const textEn = card.effect_en || card.card_text;
     const textTr = card.effect_tr;
-    
+
     if (textEn) {
         document.getElementById("modalEffectOriginal").style.display = "block";
         document.getElementById("modalEffectTranslated").style.display = "block";
@@ -387,7 +448,7 @@ function toggleFavorite(cardId, btn) {
 async function renderFavorites() {
     const grid = document.getElementById("favoritesGrid");
     const empty = document.getElementById("favoritesEmpty");
-    
+
     if (favorites.length === 0) {
         grid.innerHTML = "";
         empty.style.display = "block";
@@ -396,7 +457,7 @@ async function renderFavorites() {
     empty.style.display = "none";
 
     const cards = favorites.map(id => cardDb[id]).filter(Boolean);
-    
+
     filteredCards = cards;
     grid.className = "cards-grid";
     grid.innerHTML = cards.map((card, i) => `
@@ -467,11 +528,11 @@ function setupDeck() {
     const deckParseBtn = document.getElementById("deckParseBtn");
     const deckSaveBtn = document.getElementById("deckSaveBtn");
     const deckNewBtn = document.getElementById("deckNewBtn");
-    
+
     if (deckParseBtn) deckParseBtn.addEventListener("click", parseDeck);
     if (deckSaveBtn) deckSaveBtn.addEventListener("click", saveDeck);
     if (deckNewBtn) deckNewBtn.addEventListener("click", newDeck);
-    
+
     setupDeckAddSearch();
     renderSavedDecks();
 }
@@ -483,21 +544,21 @@ function newDeck() {
     document.getElementById("deckStats").style.display = "none";
     document.getElementById("deckEmpty").style.display = "block";
     currentDeckId = null;
-    
+
     document.querySelectorAll(".saved-deck-item").forEach(item => item.classList.remove("active"));
 }
 
 function saveDeck() {
     const nameInput = document.getElementById("deckNameInput").value.trim();
     const contentInput = document.getElementById("deckInput").value.trim();
-    
+
     if (!contentInput) {
         showToast("Kaydedilecek bir deste bulunmuyor.");
         return;
     }
-    
+
     const deckName = nameInput || "İsimsiz Deste";
-    
+
     if (currentDeckId) {
         const deckIndex = savedDecks.findIndex(d => d.id === currentDeckId);
         if (deckIndex > -1) {
@@ -516,7 +577,7 @@ function saveDeck() {
         savedDecks.unshift(newDeckObj);
         currentDeckId = newDeckObj.id;
     }
-    
+
     localStorage.setItem("optcg_saved_decks", JSON.stringify(savedDecks));
     showToast(`"${deckName}" kaydedildi.`);
     renderSavedDecks();
@@ -526,11 +587,11 @@ function saveDeck() {
 function loadDeck(id) {
     const deck = savedDecks.find(d => d.id === id);
     if (!deck) return;
-    
+
     currentDeckId = deck.id;
     document.getElementById("deckNameInput").value = deck.name;
     document.getElementById("deckInput").value = deck.content;
-    
+
     renderSavedDecks();
     parseDeck();
 }
@@ -539,16 +600,16 @@ function deleteDeck(id, event) {
     if (event) {
         event.stopPropagation();
     }
-    
+
     if (!confirm("Bu desteyi silmek istediğinize emin misiniz?")) return;
-    
+
     savedDecks = savedDecks.filter(d => d.id !== id);
     localStorage.setItem("optcg_saved_decks", JSON.stringify(savedDecks));
-    
+
     if (currentDeckId === id) {
         newDeck();
     }
-    
+
     renderSavedDecks();
     showToast("Deste silindi.");
 }
@@ -556,12 +617,12 @@ function deleteDeck(id, event) {
 function renderSavedDecks() {
     const list = document.getElementById("savedDecksList");
     if (!list) return;
-    
+
     if (savedDecks.length === 0) {
         list.innerHTML = `<div style="padding: 10px; color: var(--text-muted); font-size: 0.85rem; text-align: center;">Henüz kayıtlı deste yok.</div>`;
         return;
     }
-    
+
     list.innerHTML = savedDecks.map(deck => {
         const date = new Date(deck.updatedAt || deck.createdAt).toLocaleDateString("tr-TR");
         const isActive = currentDeckId === deck.id ? "active" : "";
@@ -591,19 +652,19 @@ function parseDeck() {
     const deckEmpty = document.getElementById("deckEmpty");
     const deckStats = document.getElementById("deckStats");
     const deckTotalCards = document.getElementById("deckTotalCards");
-    
+
     const text = deckInput.value.trim();
     if (!text) return;
-    
+
     // Parse the lines
     const lines = text.split("\n");
     const deckCards = [];
     let totalCards = 0;
-    
+
     for (let line of lines) {
         line = line.trim();
         if (!line) continue;
-        
+
         // Try to match standard format: quantity [spaces] ID [spaces] Name
         // e.g., 4 OP15-061 Ohm
         // Or 1x OP15-058 Enel
@@ -612,7 +673,7 @@ function parseDeck() {
             const quantity = parseInt(match[1]);
             const cardId = match[2].toUpperCase();
             const name = match[3];
-            
+
             deckCards.push({
                 quantity,
                 cardId,
@@ -632,12 +693,12 @@ function parseDeck() {
             }
         }
     }
-    
+
     if (deckCards.length === 0) {
         showToast("Geçerli bir deste formatı bulunamadı.");
         return;
     }
-    
+
     renderDeckCards(deckCards);
     deckTotalCards.textContent = totalCards;
     deckStats.style.display = "block";
@@ -647,20 +708,67 @@ function parseDeck() {
 function changeDeckCardQty(cardId, delta) {
     const deckInput = document.getElementById("deckInput");
     const text = deckInput.value.trim();
-    
+
+    // Validation for adding cards
+    if (delta > 0) {
+        const card = cardDb[cardId];
+        if (card) {
+            // Leader rules
+            if (card.type === "Leader") {
+                const existingLeader = getDeckLeaderId();
+                if (existingLeader) {
+                    showToast(`👑 Destede zaten bir Lider var! Sadece 1 Lider eklenebilir.`);
+                    return;
+                }
+            } else {
+                // Non-leader card: leader must exist first
+                if (!getDeckLeaderId()) {
+                    showToast(`👑 Önce bir Lider seçin! Lider seçilmeden kart eklenemez.`);
+                    return;
+                }
+                // Max 4 copies check
+                const currentQty = getCurrentDeckCardQty(cardId);
+                if (currentQty >= 4) {
+                    showToast(`⚠️ Aynı karttan en fazla 4 adet eklenebilir! (${card.name})`);
+                    return;
+                }
+            }
+            // Banned check
+            if (BANNED_CARDS.includes(cardId)) {
+                showToast(`🚫 Bu kart banlı! ${card.name} turnuvalarda kullanılamaz.`);
+                return;
+            }
+            // Color check
+            const deckColors = getDeckLeaderColors();
+            if (deckColors && card.type !== "Leader") {
+                const cardColors = (card.color || "").split(/\s+/);
+                const hasMatch = cardColors.some(c => deckColors.includes(c));
+                if (!hasMatch && card.color) {
+                    showToast(`🎨 Renk uyumsuz! ${card.color_tr || card.color} kart eklenemez.`);
+                    return;
+                }
+            }
+        }
+        const totalCards = getCurrentDeckTotal();
+        if (totalCards >= MAX_DECK_SIZE) {
+            showToast(`⚠️ Deste limiti! Maksimum ${MAX_DECK_SIZE} kart (1 Lider + 50 kart) eklenebilir.`);
+            return;
+        }
+    }
+
     if (!text && delta > 0) {
         deckInput.value = `1 ${cardId}`;
         parseDeck();
         return;
     }
-    
+
     let lines = text.split("\n");
     let found = false;
-    
+
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i].trim();
         if (!line) continue;
-        
+
         // Match standard format: "4 OP15-061 Ohm"
         const match = line.match(/^(\d+)x?\s+([A-Z0-9]+-[0-9]+)\s*(.*)/i);
         if (match && match[2].toUpperCase() === cardId.toUpperCase()) {
@@ -690,15 +798,15 @@ function changeDeckCardQty(cardId, delta) {
             }
         }
     }
-    
+
     if (!found && delta > 0) {
         const card = cardDb[cardId];
         lines.push(`1 ${cardId} ${card ? card.name : ''}`.trim());
     }
-    
+
     deckInput.value = lines.join("\n");
     parseDeck();
-    
+
     // Auto save if an existing deck is loaded
     if (currentDeckId) {
         saveDeck();
@@ -708,26 +816,26 @@ function changeDeckCardQty(cardId, delta) {
 function setupDeckAddSearch() {
     const addInput = document.getElementById("deckAddInput");
     const resultsContainer = document.getElementById("deckAddResults");
-    
+
     if (!addInput) return;
-    
+
     let searchTimeout;
-    
+
     addInput.addEventListener("input", () => {
         const q = addInput.value.trim().toLowerCase();
-        
+
         clearTimeout(searchTimeout);
         if (!q) {
             resultsContainer.style.display = "none";
             return;
         }
-        
+
         searchTimeout = setTimeout(() => {
-            const results = allCards.filter(c => 
-                c.id.toLowerCase().includes(q) || 
+            const results = allCards.filter(c =>
+                c.id.toLowerCase().includes(q) ||
                 c.name.toLowerCase().includes(q)
             ).slice(0, 10);
-            
+
             if (results.length === 0) {
                 resultsContainer.innerHTML = '<div style="padding: 10px; color: var(--text-muted); text-align: center;">Kart bulunamadı</div>';
             } else {
@@ -744,7 +852,7 @@ function setupDeckAddSearch() {
             resultsContainer.style.display = "block";
         }, 300);
     });
-    
+
     // Hide results on outside click
     document.addEventListener("click", (e) => {
         if (!addInput.contains(e.target) && !resultsContainer.contains(e.target)) {
@@ -754,19 +862,157 @@ function setupDeckAddSearch() {
 }
 
 function addCardToDeck(cardId) {
+    const card = cardDb[cardId];
+    if (!card) {
+        showToast("❌ Kart veritabanında bulunamadı.");
+        return;
+    }
+
+    // === LEADER RULES ===
+    if (card.type === "Leader") {
+        const existingLeader = getDeckLeaderId();
+        if (existingLeader) {
+            showToast(`👑 Destede zaten bir Lider var! Sadece 1 Lider eklenebilir.`);
+            return;
+        }
+    } else {
+        // Non-leader: leader must be selected first
+        if (!getDeckLeaderId()) {
+            showToast(`👑 Önce bir Lider seçin! Lider seçilmeden kart eklenemez.`);
+            return;
+        }
+        // Max 4 copies
+        const currentQty = getCurrentDeckCardQty(cardId);
+        if (currentQty >= 4) {
+            showToast(`⚠️ Aynı karttan en fazla 4 adet eklenebilir! (${card.name})`);
+            return;
+        }
+    }
+
+    // === BANNED CHECK ===
+    if (BANNED_CARDS.includes(cardId)) {
+        showToast(`🚫 Bu kart banlı! ${card.name} (${cardId}) turnuvalarda kullanılamaz.`);
+        return;
+    }
+
+    // === BANNED PAIR CHECK ===
+    const currentDeckCardIds = getCurrentDeckCardIds();
+    for (const pair of BANNED_PAIRS) {
+        if (cardId === pair.a && currentDeckCardIds.includes(pair.b)) {
+            const otherCard = cardDb[pair.b];
+            showToast(`🚫 Banned Pair! ${card.name} ile ${otherCard ? otherCard.name : pair.b} aynı destede bulunamaz.`);
+            return;
+        }
+        if (cardId === pair.b && currentDeckCardIds.includes(pair.a)) {
+            const otherCard = cardDb[pair.a];
+            showToast(`🚫 Banned Pair! ${card.name} ile ${otherCard ? otherCard.name : pair.a} aynı destede bulunamaz.`);
+            return;
+        }
+    }
+
+    // === 51 CARD LIMIT CHECK ===
+    const totalCards = getCurrentDeckTotal();
+    if (totalCards >= MAX_DECK_SIZE) {
+        showToast(`⚠️ Deste limiti! Maksimum ${MAX_DECK_SIZE} kart (1 Lider + 50 kart) eklenebilir.`);
+        return;
+    }
+
+    // === COLOR CHECK ===
+    const deckColors = getDeckLeaderColors();
+    if (deckColors && card.type !== "Leader") {
+        const cardColor = card.color || "";
+        const cardColors = cardColor.split(/\s+/);
+        const hasMatchingColor = cardColors.some(c => deckColors.includes(c));
+        if (!hasMatchingColor && cardColor) {
+            showToast(`🎨 Renk uyumsuz! Bu kart (${card.color_tr || cardColor}) destenizin Lider rengiyle (${deckColors.join('/')}) uyuşmuyor.`);
+            return;
+        }
+    }
+
     changeDeckCardQty(cardId, 1);
     document.getElementById("deckAddInput").value = "";
     document.getElementById("deckAddResults").style.display = "none";
-    showToast("Kart desteye eklendi");
+    showToast("✅ Kart desteye eklendi");
+}
+
+// === DECK HELPER FUNCTIONS ===
+function getCurrentDeckCardIds() {
+    const text = (document.getElementById("deckInput").value || "").trim();
+    if (!text) return [];
+    const ids = [];
+    for (let line of text.split("\n")) {
+        line = line.trim();
+        if (!line) continue;
+        const match = line.match(/^(\d+)x?\s+([A-Z0-9]+-[0-9]+)/i);
+        if (match) { ids.push(match[2].toUpperCase()); }
+        else {
+            const idMatch = line.match(/([A-Z0-9]+-[0-9]+)/i);
+            if (idMatch) ids.push(idMatch[1].toUpperCase());
+        }
+    }
+    return ids;
+}
+
+function getCurrentDeckTotal() {
+    const text = (document.getElementById("deckInput").value || "").trim();
+    if (!text) return 0;
+    let total = 0;
+    for (let line of text.split("\n")) {
+        line = line.trim();
+        if (!line) continue;
+        const match = line.match(/^(\d+)x?\s+([A-Z0-9]+-[0-9]+)/i);
+        if (match) { total += parseInt(match[1]); }
+        else {
+            const idMatch = line.match(/([A-Z0-9]+-[0-9]+)/i);
+            if (idMatch) total += 1;
+        }
+    }
+    return total;
+}
+
+function getDeckLeaderColors() {
+    const leaderId = getDeckLeaderId();
+    if (leaderId) {
+        const card = cardDb[leaderId];
+        if (card) return (card.color || "").split(/\s+/).filter(Boolean);
+    }
+    return null;
+}
+
+function getDeckLeaderId() {
+    const ids = getCurrentDeckCardIds();
+    for (const id of ids) {
+        const card = cardDb[id];
+        if (card && card.type === "Leader") return id;
+    }
+    return null;
+}
+
+function getCurrentDeckCardQty(cardId) {
+    const text = (document.getElementById("deckInput").value || "").trim();
+    if (!text) return 0;
+    for (let line of text.split("\n")) {
+        line = line.trim();
+        if (!line) continue;
+        const match = line.match(/^(\d+)x?\s+([A-Z0-9]+-[0-9]+)/i);
+        if (match && match[2].toUpperCase() === cardId.toUpperCase()) {
+            return parseInt(match[1]);
+        }
+        const idMatch = line.match(/^([A-Z0-9]+-[0-9]+)$/i);
+        if (idMatch && idMatch[1].toUpperCase() === cardId.toUpperCase()) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 function renderDeckCards(deckCards) {
     const deckGrid = document.getElementById("deckGrid");
-    
+
     deckGrid.innerHTML = deckCards.map((deckCard, i) => {
         const card = cardDb[deckCard.cardId] || { id: deckCard.cardId, name: deckCard.name };
         const isFav = favorites.includes(card.id);
-        
+
         return `
         <div class="card-item deck-card-item" style="animation-delay: ${Math.min(i * 30, 600)}ms" 
              onclick="openCardModal('${card.id}')">
@@ -872,16 +1118,16 @@ function setupGuide() {
     guideModalClose.addEventListener("click", closeGuide);
     guideNextBtn.addEventListener("click", nextGuideStep);
     guidePrevBtn.addEventListener("click", prevGuideStep);
-    
+
     // Generate Progress Bar HTML dynamically
-    if(guideProgressContainer) {
+    if (guideProgressContainer) {
         guideProgressContainer.innerHTML = '';
         for (let i = 0; i < guideSteps.length; i++) {
             const stepDiv = document.createElement("div");
             stepDiv.className = "progress-step";
             stepDiv.textContent = i + 1;
             guideProgressContainer.appendChild(stepDiv);
-            
+
             if (i < guideSteps.length - 1) {
                 const lineDiv = document.createElement("div");
                 lineDiv.className = "progress-line";
@@ -931,11 +1177,11 @@ function prevGuideStep() {
 
 function updateGuideUI() {
     const step = guideSteps[currentGuideStep];
-    
+
     // Update Text
     guideStepTitle.textContent = step.title;
     guideStepDesc.textContent = step.desc;
-    
+
     // Update Buttons
     guidePrevBtn.disabled = currentGuideStep === 0;
     if (currentGuideStep === guideSteps.length - 1) {
@@ -945,7 +1191,7 @@ function updateGuideUI() {
         guideNextBtn.textContent = "Sonraki Adım";
         guideNextBtn.style.background = "var(--accent)";
     }
-    
+
     // Update Progress Bar
     progressSteps.forEach((el, idx) => {
         if (idx < currentGuideStep) {
@@ -956,7 +1202,7 @@ function updateGuideUI() {
             el.className = "progress-step";
         }
     });
-    
+
     progressLines.forEach((el, idx) => {
         if (idx < currentGuideStep) {
             el.className = "progress-line completed";
@@ -964,7 +1210,7 @@ function updateGuideUI() {
             el.className = "progress-line";
         }
     });
-    
+
     // Highlight Zones
     let firstHighlightedZone = null;
     allZones.forEach(zone => {

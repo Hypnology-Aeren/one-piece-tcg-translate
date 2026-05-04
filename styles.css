@@ -604,6 +604,24 @@ body {
     transform: translateY(-50%) translateX(4px);
 }
 
+.sets-group-title {
+    grid-column: 1 / -1;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 16px 0 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.set-card-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
 /* ===== MODAL ===== */
 .modal-overlay {
     display: none;
