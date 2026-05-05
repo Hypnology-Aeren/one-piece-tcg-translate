@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupViewToggle();
     setupGuide();
     setupDeck();
+    setupBackButton();
 
     await loadDatabase();
     loadSets();
@@ -70,17 +71,17 @@ async function loadDatabase() {
     cardsLoading = false;
 }
 
-// ===== NAVIGATION =====
+// ===== NAVIGATION (Updated) =====
 function setupNavigation() {
     document.querySelectorAll(".nav-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const view = btn.dataset.view;
-            switchView(view);
+            if (view) switchView(view);
         });
     });
 }
 
-function switchView(view) {
+function switchView(view, saveHistory = true) {
     currentView = view;
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
     document.querySelector(`[data-view="${view}"]`).classList.add("active");
@@ -414,7 +415,7 @@ async function openCardModal(cardId) {
     favBtn.querySelector("svg").setAttribute("fill", isFav ? "currentColor" : "none");
     favBtn.onclick = () => toggleFavorite(card.id || card.card_set_id, favBtn);
 
-    cardModal.classList.add("active");
+    cardModal.classList.add("active"); history.pushState({modal: 'card'}, '', '');
     document.body.style.overflow = "hidden";
 }
 
@@ -1150,7 +1151,7 @@ function setupGuide() {
 function openGuide() {
     currentGuideStep = 0;
     updateGuideUI();
-    guideModal.classList.add("active");
+    guideModal.classList.add("active"); history.pushState({modal: 'guide'}, '', '');
     document.body.style.overflow = "hidden";
 }
 
@@ -1229,6 +1230,34 @@ function updateGuideUI() {
         container.scrollTo({
             left: scrollX,
             behavior: 'smooth'
+        });
+    }
+}
+
+function setupBackButton() {
+    window.addEventListener('popstate', (event) => {
+        if (cardModal && cardModal.classList.contains('active')) {
+            closeModal(false);
+        } else if (guideModal && guideModal.classList.contains('active')) {
+            closeGuide(false);
+        } else if (event.state && event.state.view) {
+            switchView(event.state.view, false);
+        } else if (currentView !== 'search') {
+            switchView('search', false);
+        }
+    });
+
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        window.Capacitor.Plugins.App.addListener('backButton', () => {
+            if (cardModal && cardModal.classList.contains('active')) {
+                window.history.back();
+            } else if (guideModal && guideModal.classList.contains('active')) {
+                window.history.back();
+            } else if (currentView !== 'search') {
+                window.history.back();
+            } else {
+                window.Capacitor.Plugins.App.exitApp();
+            }
         });
     }
 }

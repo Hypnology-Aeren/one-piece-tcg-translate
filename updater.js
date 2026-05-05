@@ -1,102 +1,133 @@
-// ===== OPTCG Updater — Renderer Side =====
-// Bu dosya Electron main process'ten gelen güncelleme mesajlarını dinler
+// ===== OPTCG Updater — Cross-Platform =====
+// Bu dosya hem Electron hem de Mobile (Capacitor) için güncelleme kontrolü yapar
 
-const { ipcRenderer } = require('electron');
+let isElectron = false;
+let ipcRenderer = null;
+
+try {
+    // Electron ortamında mıyız?
+    if (window.process && window.process.type === 'renderer') {
+        ipcRenderer = require('electron').ipcRenderer;
+        isElectron = true;
+    }
+} catch (e) {
+    console.log("Electron ortamı algılanamadı, web/mobil modunda çalışılıyor.");
+}
 
 let updateState = 'idle'; // idle | available | downloading | ready
+let latestReleaseUrl = '';
+const CURRENT_VERSION = '1.2.0'; // Uygulamanın şu anki versiyonu
 
-// ===== Versiyon Bilgisi =====
-ipcRenderer.on('app-version', (event, version) => {
-    const versionText = document.getElementById('versionText');
-    if (versionText) {
-        versionText.textContent = `v${version}`;
+// ===== ELECTRON LOGIC =====
+if (isElectron) {
+    ipcRenderer.on('app-version', (event, version) => {
+        const versionText = document.getElementById('versionText');
+        if (versionText) versionText.textContent = `v${version}`;
+    });
+
+    ipcRenderer.on('update-available', (event, info) => {
+        showUpdateBanner(info.version);
+    });
+
+    ipcRenderer.on('update-download-progress', (event, progress) => {
+        const progressFill = document.getElementById('updateProgressFill');
+        const progressText = document.getElementById('updateProgressText');
+        const progressWrapper = document.getElementById('updateProgressWrapper');
+        const title = document.getElementById('updateTitle');
+
+        progressWrapper.style.display = 'flex';
+        progressFill.style.width = `${progress.percent}%`;
+        progressText.textContent = `${Math.round(progress.percent)}%`;
+        title.textContent = `⬇️ İndiriliyor...`;
+    });
+
+    ipcRenderer.on('update-downloaded', (event, info) => {
+        updateState = 'ready';
+        const title = document.getElementById('updateTitle');
+        const actionBtn = document.getElementById('updateActionBtn');
+        const progressWrapper = document.getElementById('updateProgressWrapper');
+
+        title.textContent = '✅ Güncelleme hazır!';
+        actionBtn.textContent = '🔄 Yeniden Başlat';
+        actionBtn.disabled = false;
+        actionBtn.classList.add('pulse-animation');
+        progressWrapper.style.display = 'none';
+    });
+
+    ipcRenderer.on('update-error', (event, message) => {
+        updateState = 'idle';
+        console.error('Güncelleme hatası:', message);
+        document.getElementById('updateBanner').style.display = 'none';
+    });
+}
+
+// ===== MOBILE / WEB LOGIC (GitHub API) =====
+async function checkGitHubUpdate() {
+    try {
+        const response = await fetch('https://api.github.com/repos/Hypnology-Aeren/one-piece-tcg-translate/releases/latest');
+        if (!response.ok) return;
+        
+        const data = await response.json();
+        const latestVersion = data.tag_name.replace('v', '');
+        latestReleaseUrl = data.html_url;
+
+        if (compareVersions(latestVersion, CURRENT_VERSION) > 0) {
+            updateState = 'available_mobile';
+            showUpdateBanner(latestVersion);
+        }
+    } catch (e) {
+        console.error("Güncelleme kontrolü başarısız:", e);
     }
-});
+}
 
-// ===== Güncelleme Mevcut =====
-ipcRenderer.on('update-available', (event, info) => {
-    updateState = 'available';
+function compareVersions(v1, v2) {
+    const parts1 = v1.split('.').map(Number);
+    const parts2 = v2.split('.').map(Number);
+    for (let i = 0; i < 3; i++) {
+        if (parts1[i] > parts2[i]) return 1;
+        if (parts1[i] < parts2[i]) return -1;
+    }
+    return 0;
+}
+
+// ===== COMMON UI LOGIC =====
+function showUpdateBanner(version) {
     const banner = document.getElementById('updateBanner');
     const title = document.getElementById('updateTitle');
-    const version = document.getElementById('updateVersion');
+    const versionEl = document.getElementById('updateVersion');
     const actionBtn = document.getElementById('updateActionBtn');
     const progressWrapper = document.getElementById('updateProgressWrapper');
 
-    title.textContent = '🎉 Yeni güncelleme mevcut!';
-    version.textContent = `v${info.version}`;
-    actionBtn.textContent = 'İndir';
+    title.textContent = isElectron ? '🎉 Yeni güncelleme mevcut!' : '📱 Yeni APK sürümü mevcut!';
+    versionEl.textContent = `v${version}`;
+    actionBtn.textContent = isElectron ? 'İndir' : 'İndir (GitHub)';
     actionBtn.disabled = false;
     progressWrapper.style.display = 'none';
     banner.style.display = 'flex';
     banner.classList.add('slide-in');
 
-    showToast(`🆕 Yeni sürüm v${info.version} mevcut!`);
-});
+    if (typeof showToast === 'function') {
+        showToast(`🆕 Yeni sürüm v${version} mevcut!`);
+    }
+}
 
-// ===== Güncelleme Yok =====
-ipcRenderer.on('update-not-available', () => {
-    updateState = 'idle';
-    // Sessizce geç, banner göstermeye gerek yok
-    console.log('✅ Uygulama güncel.');
-});
-
-// ===== İndirme İlerleme =====
-ipcRenderer.on('update-download-progress', (event, progress) => {
-    const progressFill = document.getElementById('updateProgressFill');
-    const progressText = document.getElementById('updateProgressText');
-    const progressWrapper = document.getElementById('updateProgressWrapper');
-    const title = document.getElementById('updateTitle');
-
-    progressWrapper.style.display = 'flex';
-    progressFill.style.width = `${progress.percent}%`;
-    
-    const mbTransferred = (progress.transferred / 1048576).toFixed(1);
-    const mbTotal = (progress.total / 1048576).toFixed(1);
-    const speed = (progress.bytesPerSecond / 1048576).toFixed(1);
-    
-    progressText.textContent = `${progress.percent}%`;
-    title.textContent = `⬇️ İndiriliyor... ${mbTransferred}/${mbTotal} MB (${speed} MB/s)`;
-});
-
-// ===== İndirme Tamamlandı =====
-ipcRenderer.on('update-downloaded', (event, info) => {
-    updateState = 'ready';
-    const title = document.getElementById('updateTitle');
-    const actionBtn = document.getElementById('updateActionBtn');
-    const progressWrapper = document.getElementById('updateProgressWrapper');
-    const banner = document.getElementById('updateBanner');
-
-    title.textContent = '✅ Güncelleme hazır!';
-    actionBtn.textContent = '🔄 Yeniden Başlat';
-    actionBtn.disabled = false;
-    actionBtn.classList.add('pulse-animation');
-    progressWrapper.style.display = 'none';
-    banner.style.display = 'flex';
-
-    showToast('✅ Güncelleme indirildi! Yeniden başlatmak için tıklayın.');
-});
-
-// ===== Hata =====
-ipcRenderer.on('update-error', (event, message) => {
-    updateState = 'idle';
-    console.error('Güncelleme hatası:', message);
-    const banner = document.getElementById('updateBanner');
-    banner.style.display = 'none';
-});
-
-// ===== Buton Aksiyonları =====
 function handleUpdateAction() {
     const actionBtn = document.getElementById('updateActionBtn');
 
-    if (updateState === 'available') {
-        // İndirmeyi başlat
-        updateState = 'downloading';
-        actionBtn.textContent = 'İndiriliyor...';
-        actionBtn.disabled = true;
-        ipcRenderer.send('download-update');
-    } else if (updateState === 'ready') {
-        // Güncellemeyi kur ve yeniden başlat
-        ipcRenderer.send('install-update');
+    if (isElectron) {
+        if (updateState === 'available') {
+            updateState = 'downloading';
+            actionBtn.textContent = 'İndiriliyor...';
+            actionBtn.disabled = true;
+            ipcRenderer.send('download-update');
+        } else if (updateState === 'ready') {
+            ipcRenderer.send('install-update');
+        }
+    } else {
+        // Mobile / Web: GitHub sayfasına yönlendir
+        if (latestReleaseUrl) {
+            window.open(latestReleaseUrl, '_blank');
+        }
     }
 }
 
@@ -109,13 +140,33 @@ function dismissUpdate() {
     }, 300);
 }
 
-// Versiyon badge'ine tıklayınca manuel kontrol
+// Init
 document.addEventListener('DOMContentLoaded', () => {
+    // Versiyon yazısını güncelle
+    const versionText = document.getElementById('versionText');
+    if (versionText && !isElectron) {
+        versionText.textContent = `v${CURRENT_VERSION}`;
+    }
+
+    // Mobil için kontrol başlat
+    if (!isElectron) {
+        checkGitHubUpdate();
+    }
+
+    // Manuel kontrol butonu
     const versionBadge = document.getElementById('versionBadge');
     if (versionBadge) {
         versionBadge.addEventListener('click', () => {
-            showToast('🔍 Güncelleme kontrol ediliyor...');
-            ipcRenderer.send('check-for-updates');
+            if (typeof showToast === 'function') showToast('🔍 Güncelleme kontrol ediliyor...');
+            if (isElectron) {
+                ipcRenderer.send('check-for-updates');
+            } else {
+                checkGitHubUpdate().then(() => {
+                    if (updateState === 'idle' && typeof showToast === 'function') {
+                        showToast('✅ Uygulamanız güncel.');
+                    }
+                });
+            }
         });
     }
 });

@@ -2,6 +2,15 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
+// ===== Bellek ve Performans Optimizasyonları (RAM Tasarrufu) =====
+// V8 JavaScript motorunun maksimum bellek kullanımını sınırla (örneğin 256MB veya 512MB)
+app.commandLine.appendSwitch('js-flags', '--max-old-space-size=512 --expose-gc');
+// Chromium'un her site/frame için ayrı işlem (process) açmasını engelle (Büyük ölçüde RAM kurtarır)
+app.commandLine.appendSwitch('disable-site-isolation-trials');
+// Donanım ivmelendirmesi GPU tarafında yüksek RAM tüketebilir. İsteğe bağlı olarak açıp kapatabilirsiniz.
+// Eğer arayüzde kasmalar olursa alttaki satırı silebilir veya yorum satırı yapabilirsiniz.
+app.disableHardwareAcceleration();
+
 let mainWindow;
 
 // ===== Auto-Updater Yapılandırması =====

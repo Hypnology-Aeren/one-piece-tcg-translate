@@ -1189,7 +1189,50 @@ body {
     }
 
     .playmat {
-        min-width: 500px; /* Allow horizontal scroll for playmat */
+        min-width: unset;
+        gap: 12px;
+    }
+
+    .playmat-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .zone {
+        min-height: 70px;
+        font-size: 0.65rem;
+        padding: 4px;
+        flex: 1 1 calc(33.33% - 8px); /* 3 columns on mobile */
+    }
+
+    .zone-character {
+        flex: 1 1 100%; /* Character area takes full width on its row */
+        order: 2;
+    }
+
+    .zone-leader {
+        flex: 1 1 calc(50% - 8px);
+        order: 1;
+    }
+
+    .zone-stage {
+        flex: 1 1 calc(50% - 8px);
+        order: 3;
+    }
+
+    .zone-life {
+        flex: 1 1 calc(33% - 8px);
+        order: 4;
+    }
+
+    .zone-cost {
+        flex: 1 1 calc(66% - 8px);
+        order: 5;
+    }
+
+    .zone-deck, .zone-trash, .zone-don-deck {
+        flex: 1 1 calc(33% - 8px);
+        order: 6;
     }
 
     .guide-body {
@@ -1627,8 +1670,8 @@ body {
 
 .zone-don-deck {
     flex: 1;
-    border-color: rgba(0, 0, 0, 0);
-    background: #222;
+    border-color: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .zone-cost {
