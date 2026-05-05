@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">OPTCG Çevirici</string>
-    <string name="title_activity_main">OPTCG Çevirici</string>
-    <string name="package_name">com.optcg.cevirici</string>
-    <string name="custom_url_scheme">com.optcg.cevirici</string>
-</resources>
