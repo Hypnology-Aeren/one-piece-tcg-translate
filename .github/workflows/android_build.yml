@@ -30,7 +30,7 @@ jobs:
       - name: Prepare Web Assets
         run: |
           mkdir -p www
-          cp index.html app.js styles.css cards_tr.json manifest.json sw.js translations.js vazgec_cards.json www/ || true
+          cp index.html app.js styles.css cards_tr.json manifest.json sw.js translations.js vazgec_cards.json updater.js www/ || true
 
       - name: Sync Capacitor
         run: npx cap sync android

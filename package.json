@@ -7,7 +7,7 @@
     "start": "electron .",
     "dist": "electron-builder --win --publish never",
     "release": "electron-builder --win --publish always",
-    "mobile:prep": "powershell -Command \"New-Item -ItemType Directory -Force -Path www; Copy-Item -Path index.html,app.js,styles.css,cards_tr.json,manifest.json,sw.js,translations.js,vazgec_cards.json -Destination www/ -ErrorAction SilentlyContinue\"",
+    "mobile:prep": "powershell -Command \"New-Item -ItemType Directory -Force -Path www; Copy-Item -Path index.html,app.js,styles.css,cards_tr.json,manifest.json,sw.js,translations.js,vazgec_cards.json,updater.js -Destination www/ -ErrorAction SilentlyContinue\"",
     "mobile:init": "npx cap init",
     "mobile:add": "npx cap add android",
     "mobile:sync": "npm run mobile:prep && npx cap sync android",
