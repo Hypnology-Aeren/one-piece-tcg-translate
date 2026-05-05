@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
-
+require('dotenv').config();
 // ===== Bellek ve Performans Optimizasyonları (RAM Tasarrufu) =====
 // V8 JavaScript motorunun maksimum bellek kullanımını sınırla (örneğin 256MB veya 512MB)
 app.commandLine.appendSwitch('js-flags', '--max-old-space-size=512 --expose-gc');

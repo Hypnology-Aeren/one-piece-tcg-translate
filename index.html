@@ -518,6 +518,51 @@
         <span id="versionText">v1.0.0</span>
     </div>
 
+    <!-- AI Chatbot UI -->
+    <button class="ai-chat-btn" id="aiChatBtn" title="Yapay Zeka Asistanı">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            <path d="M9 10h.01"></path>
+            <path d="M15 10h.01"></path>
+            <path d="M12 10h.01"></path>
+        </svg>
+    </button>
+
+    <div class="ai-chat-window" id="aiChatWindow">
+        <div class="ai-chat-header">
+            <div class="ai-header-info">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-4"></path>
+                    <path d="M12 8h.01"></path>
+                </svg>
+                <h3>OPTCG Hakemi</h3>
+            </div>
+            <button class="ai-chat-close" id="aiChatClose">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-message ai">
+                <div class="ai-message-content">
+                    Merhaba! Ben One Piece TCG asistanıyım. Kurallar, kartlar veya hamleler hakkında bana soru sorabilirsiniz.
+                </div>
+            </div>
+        </div>
+        <div class="ai-chat-input-area">
+            <textarea id="aiChatInput" placeholder="Bir soru sorun... (Örn: Enel liderin yeteneği nasıl çalışır?)"></textarea>
+            <button class="ai-chat-send" id="aiChatSend">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+
     <!-- Toast notification -->
     <div class="toast-container" id="toastContainer"></div>
 

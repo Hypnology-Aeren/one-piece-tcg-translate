@@ -1,4 +1,4 @@
-// ===== OPTCG Card Translator App =====
+﻿// ===== OPTCG Card Translator App =====
 const API_BASE = "https://optcgapi.com/api";
 
 // State
@@ -12,10 +12,10 @@ let currentView = "search";
 let deckLeaderColor = null; // Destenin lider rengi
 
 // ===== BANNED / RESTRICTED CARDS =====
-const BANNED_CARDS = []; // Şu an tamamen banlı kart yok
-const RESTRICTED_CARDS = []; // Şu an restricted kart yok
+const BANNED_CARDS = []; // Åu an tamamen banlÄ± kart yok
+const RESTRICTED_CARDS = []; // Åu an restricted kart yok
 const BANNED_PAIRS = [
-    { a: "OP07-115", b: "EB04-058" } // Banned Pair: Bu iki kart aynı destede bulunamaz
+    { a: "OP07-115", b: "EB04-058" } // Banned Pair: Bu iki kart aynÄ± destede bulunamaz
 ];
 const MAX_DECK_SIZE = 51; // 1 Lider + 50 kart
 let currentViewMode = "grid";
@@ -62,10 +62,10 @@ async function loadDatabase() {
         cardDb = data.cards;
         allCards = Object.values(cardDb);
         updateTotalCount(allCards.length);
-        console.log(`✅ Veritabanı yüklendi: ${allCards.length} kart`);
+        console.log(`âœ… VeritabanÄ± yÃ¼klendi: ${allCards.length} kart`);
     } catch (e) {
-        console.error("❌ Veritabanı yüklenemedi:", e);
-        showToast("⚠️ Veritabanı yüklenemedi. İnternet üzerinden devam ediliyor...");
+        console.error("âŒ VeritabanÄ± yÃ¼klenemedi:", e);
+        showToast("âš ï¸ VeritabanÄ± yÃ¼klenemedi. Ä°nternet Ã¼zerinden devam ediliyor...");
     }
     showLoading(false);
     cardsLoading = false;
@@ -111,11 +111,11 @@ async function loadSets() {
         allSets.forEach(s => {
             const opt = document.createElement("option");
             opt.value = s.set_id;
-            opt.textContent = `${s.set_id} — ${s.set_name}`;
+            opt.textContent = `${s.set_id} â€” ${s.set_name}`;
             setFilter.appendChild(opt);
         });
     } catch (e) {
-        console.error("Sets yüklenemedi:", e);
+        console.error("Sets yÃ¼klenemedi:", e);
     }
 }
 
@@ -154,7 +154,7 @@ async function loadSetsView() {
         }
         let html = '';
         for (const [key, sets] of Object.entries(groups)) {
-            const groupName = groupNames[key] || "Diğer";
+            const groupName = groupNames[key] || "DiÄŸer";
             html += `<div class="sets-group-title">${groupName}</div>`;
             html += sets.map(s => `
                 <div class="set-card" onclick="loadSetCardsByPrefix('${s.id}')">
@@ -172,7 +172,7 @@ async function loadSetsView() {
         setsGrid.innerHTML = html;
         setsLoaded = true;
     } catch (e) {
-        setsGrid.innerHTML = `<p style="color:var(--text-muted);">Setler yüklenemedi.</p>`;
+        setsGrid.innerHTML = `<p style="color:var(--text-muted);">Setler yÃ¼klenemedi.</p>`;
     }
 }
 
@@ -188,7 +188,7 @@ function loadSetCardsByPrefix(prefix) {
     resultsCount.textContent = `${results.length} kart bulundu`;
     resultsHeader.style.display = results.length > 0 ? "flex" : "none";
     emptyState.style.display = results.length === 0 ? "block" : "none";
-    showToast(`📦 ${prefix} seti yüklendi (${results.length} kart)`);
+    showToast(`ğŸ“¦ ${prefix} seti yÃ¼klendi (${results.length} kart)`);
 }
 
 async function loadSetCards(setId, setName) {
@@ -199,7 +199,7 @@ async function loadSetCards(setId, setName) {
     typeFilter.value = "";
 
     searchCards("", setId);
-    showToast(`📦 ${setName} seti yüklendi`);
+    showToast(`ğŸ“¦ ${setName} seti yÃ¼klendi`);
 }
 
 // ===== SEARCH =====
@@ -282,8 +282,8 @@ function searchCards(query, forceSetId = null) {
     emptyState.style.display = results.length === 0 ? "block" : "none";
 
     if (results.length === 0) {
-        emptyState.querySelector("h3").textContent = "Sonuç bulunamadı";
-        emptyState.querySelector("p").textContent = "Farklı bir arama terimi veya filtre deneyin";
+        emptyState.querySelector("h3").textContent = "SonuÃ§ bulunamadÄ±";
+        emptyState.querySelector("p").textContent = "FarklÄ± bir arama terimi veya filtre deneyin";
     }
 
     showLoading(false);
@@ -300,7 +300,7 @@ function renderCards(cards) {
                 <div class="card-color-bar ${card.color || ''}"></div>
                 <img src="${card.image || `https://optcgapi.com/media/static/Card_Images/${card.id}.jpg`}" 
                      alt="${card.name}" loading="lazy"
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 250 350%22><rect fill=%22%2316161f%22 width=%22250%22 height=%22350%22/><text fill=%22%23555%22 font-size=%2214%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22>Görsel Yok</text></svg>'">
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 250 350%22><rect fill=%22%2316161f%22 width=%22250%22 height=%22350%22/><text fill=%22%23555%22 font-size=%2214%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22>GÃ¶rsel Yok</text></svg>'">
                 <button class="card-favorite-btn ${isFav ? 'favorited' : ''}" 
                         onclick="event.stopPropagation();toggleFavorite('${card.id}', this)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
@@ -314,7 +314,7 @@ function renderCards(cards) {
                 <div class="card-info-meta">
                     <span class="meta-tag">${card.color_tr || card.color}</span>
                     <span class="meta-tag">${card.type_tr || card.type}</span>
-                    ${card.power ? `<span class="meta-tag">⚡${card.power}</span>` : ""}
+                    ${card.power ? `<span class="meta-tag">âš¡${card.power}</span>` : ""}
                 </div>
             </div>
         </div>`;
@@ -353,7 +353,7 @@ async function openCardModal(cardId) {
     document.getElementById("modalCardImage").src = card.image || card.card_image || `https://optcgapi.com/media/static/Card_Images/${card.id}.jpg`;
     document.getElementById("modalCardId").textContent = card.id || card.card_set_id;
     document.getElementById("modalRarity").textContent = card.rarity_tr || card.rarity;
-    document.getElementById("modalCardName").textContent = card.name || card.card_name || "—";
+    document.getElementById("modalCardName").textContent = card.name || card.card_name || "â€”";
 
     // Color
     const colorVal = document.getElementById("modalColor");
@@ -362,10 +362,10 @@ async function openCardModal(cardId) {
     colorVal.style.color = getColorHex(colorStr);
 
     document.getElementById("modalType").textContent = card.type_tr || card.card_type;
-    document.getElementById("modalCost").textContent = card.cost || card.card_cost || "—";
-    document.getElementById("modalPower").textContent = card.power || card.card_power || "—";
-    document.getElementById("modalCounter").textContent = card.counter || card.counter_amount || "—";
-    document.getElementById("modalLife").textContent = card.life || "—";
+    document.getElementById("modalCost").textContent = card.cost || card.card_cost || "â€”";
+    document.getElementById("modalPower").textContent = card.power || card.card_power || "â€”";
+    document.getElementById("modalCounter").textContent = card.counter || card.counter_amount || "â€”";
+    document.getElementById("modalLife").textContent = card.life || "â€”";
 
     // Show/hide stats
     document.getElementById("modalCostStat").style.display = (card.cost || card.card_cost) ? "" : "none";
@@ -400,11 +400,11 @@ async function openCardModal(cardId) {
         document.getElementById("modalEffectOriginal").style.display = "block";
         document.getElementById("modalEffectTranslated").style.display = "none";
         document.querySelector(".effect-divider").style.display = "none";
-        effectEn.textContent = "Bu kartın efekti yok.";
+        effectEn.textContent = "Bu kartÄ±n efekti yok.";
     }
 
     // Set & Attribute
-    document.getElementById("modalSetName").textContent = card.set_name || "—";
+    document.getElementById("modalSetName").textContent = card.set_name || "â€”";
     document.getElementById("modalAttribute").textContent = card.attribute_tr || card.attribute;
     document.getElementById("modalAttribute").style.display = (card.attribute_tr || card.attribute) ? "" : "none";
 
@@ -434,14 +434,14 @@ function toggleFavorite(cardId, btn) {
             btn.classList.remove("favorited");
             btn.querySelector("svg").setAttribute("fill", "none");
         }
-        showToast("💔 Favorilerden çıkarıldı");
+        showToast("ğŸ’” Favorilerden Ã§Ä±karÄ±ldÄ±");
     } else {
         favorites.push(cardId);
         if (btn) {
             btn.classList.add("favorited");
             btn.querySelector("svg").setAttribute("fill", "currentColor");
         }
-        showToast("❤️ Favorilere eklendi");
+        showToast("â¤ï¸ Favorilere eklendi");
     }
     localStorage.setItem("optcg_favorites", JSON.stringify(favorites));
 }
@@ -558,7 +558,7 @@ function saveDeck() {
         return;
     }
 
-    const deckName = nameInput || "İsimsiz Deste";
+    const deckName = nameInput || "Ä°simsiz Deste";
 
     if (currentDeckId) {
         const deckIndex = savedDecks.findIndex(d => d.id === currentDeckId);
@@ -602,7 +602,7 @@ function deleteDeck(id, event) {
         event.stopPropagation();
     }
 
-    if (!confirm("Bu desteyi silmek istediğinize emin misiniz?")) return;
+    if (!confirm("Bu desteyi silmek istediÄŸinize emin misiniz?")) return;
 
     savedDecks = savedDecks.filter(d => d.id !== id);
     localStorage.setItem("optcg_saved_decks", JSON.stringify(savedDecks));
@@ -620,7 +620,7 @@ function renderSavedDecks() {
     if (!list) return;
 
     if (savedDecks.length === 0) {
-        list.innerHTML = `<div style="padding: 10px; color: var(--text-muted); font-size: 0.85rem; text-align: center;">Henüz kayıtlı deste yok.</div>`;
+        list.innerHTML = `<div style="padding: 10px; color: var(--text-muted); font-size: 0.85rem; text-align: center;">HenÃ¼z kayÄ±tlÄ± deste yok.</div>`;
         return;
     }
 
@@ -696,7 +696,7 @@ function parseDeck() {
     }
 
     if (deckCards.length === 0) {
-        showToast("Geçerli bir deste formatı bulunamadı.");
+        showToast("GeÃ§erli bir deste formatÄ± bulunamadÄ±.");
         return;
     }
 
@@ -718,25 +718,25 @@ function changeDeckCardQty(cardId, delta) {
             if (card.type === "Leader") {
                 const existingLeader = getDeckLeaderId();
                 if (existingLeader) {
-                    showToast(`👑 Destede zaten bir Lider var! Sadece 1 Lider eklenebilir.`);
+                    showToast(`ğŸ‘‘ Destede zaten bir Lider var! Sadece 1 Lider eklenebilir.`);
                     return;
                 }
             } else {
                 // Non-leader card: leader must exist first
                 if (!getDeckLeaderId()) {
-                    showToast(`👑 Önce bir Lider seçin! Lider seçilmeden kart eklenemez.`);
+                    showToast(`ğŸ‘‘ Ã–nce bir Lider seÃ§in! Lider seÃ§ilmeden kart eklenemez.`);
                     return;
                 }
                 // Max 4 copies check
                 const currentQty = getCurrentDeckCardQty(cardId);
                 if (currentQty >= 4) {
-                    showToast(`⚠️ Aynı karttan en fazla 4 adet eklenebilir! (${card.name})`);
+                    showToast(`âš ï¸ AynÄ± karttan en fazla 4 adet eklenebilir! (${card.name})`);
                     return;
                 }
             }
             // Banned check
             if (BANNED_CARDS.includes(cardId)) {
-                showToast(`🚫 Bu kart banlı! ${card.name} turnuvalarda kullanılamaz.`);
+                showToast(`ğŸš« Bu kart banlÄ±! ${card.name} turnuvalarda kullanÄ±lamaz.`);
                 return;
             }
             // Color check
@@ -745,14 +745,14 @@ function changeDeckCardQty(cardId, delta) {
                 const cardColors = (card.color || "").split(/\s+/);
                 const hasMatch = cardColors.some(c => deckColors.includes(c));
                 if (!hasMatch && card.color) {
-                    showToast(`🎨 Renk uyumsuz! ${card.color_tr || card.color} kart eklenemez.`);
+                    showToast(`ğŸ¨ Renk uyumsuz! ${card.color_tr || card.color} kart eklenemez.`);
                     return;
                 }
             }
         }
         const totalCards = getCurrentDeckTotal();
         if (totalCards >= MAX_DECK_SIZE) {
-            showToast(`⚠️ Deste limiti! Maksimum ${MAX_DECK_SIZE} kart (1 Lider + 50 kart) eklenebilir.`);
+            showToast(`âš ï¸ Deste limiti! Maksimum ${MAX_DECK_SIZE} kart (1 Lider + 50 kart) eklenebilir.`);
             return;
         }
     }
@@ -838,7 +838,7 @@ function setupDeckAddSearch() {
             ).slice(0, 10);
 
             if (results.length === 0) {
-                resultsContainer.innerHTML = '<div style="padding: 10px; color: var(--text-muted); text-align: center;">Kart bulunamadı</div>';
+                resultsContainer.innerHTML = '<div style="padding: 10px; color: var(--text-muted); text-align: center;">Kart bulunamadÄ±</div>';
             } else {
                 resultsContainer.innerHTML = results.map(c => `
                     <div class="deck-add-result-item" onclick="addCardToDeck('${c.id}')">
@@ -865,7 +865,7 @@ function setupDeckAddSearch() {
 function addCardToDeck(cardId) {
     const card = cardDb[cardId];
     if (!card) {
-        showToast("❌ Kart veritabanında bulunamadı.");
+        showToast("âŒ Kart veritabanÄ±nda bulunamadÄ±.");
         return;
     }
 
@@ -873,26 +873,26 @@ function addCardToDeck(cardId) {
     if (card.type === "Leader") {
         const existingLeader = getDeckLeaderId();
         if (existingLeader) {
-            showToast(`👑 Destede zaten bir Lider var! Sadece 1 Lider eklenebilir.`);
+            showToast(`ğŸ‘‘ Destede zaten bir Lider var! Sadece 1 Lider eklenebilir.`);
             return;
         }
     } else {
         // Non-leader: leader must be selected first
         if (!getDeckLeaderId()) {
-            showToast(`👑 Önce bir Lider seçin! Lider seçilmeden kart eklenemez.`);
+            showToast(`ğŸ‘‘ Ã–nce bir Lider seÃ§in! Lider seÃ§ilmeden kart eklenemez.`);
             return;
         }
         // Max 4 copies
         const currentQty = getCurrentDeckCardQty(cardId);
         if (currentQty >= 4) {
-            showToast(`⚠️ Aynı karttan en fazla 4 adet eklenebilir! (${card.name})`);
+            showToast(`âš ï¸ AynÄ± karttan en fazla 4 adet eklenebilir! (${card.name})`);
             return;
         }
     }
 
     // === BANNED CHECK ===
     if (BANNED_CARDS.includes(cardId)) {
-        showToast(`🚫 Bu kart banlı! ${card.name} (${cardId}) turnuvalarda kullanılamaz.`);
+        showToast(`ğŸš« Bu kart banlÄ±! ${card.name} (${cardId}) turnuvalarda kullanÄ±lamaz.`);
         return;
     }
 
@@ -901,12 +901,12 @@ function addCardToDeck(cardId) {
     for (const pair of BANNED_PAIRS) {
         if (cardId === pair.a && currentDeckCardIds.includes(pair.b)) {
             const otherCard = cardDb[pair.b];
-            showToast(`🚫 Banned Pair! ${card.name} ile ${otherCard ? otherCard.name : pair.b} aynı destede bulunamaz.`);
+            showToast(`ğŸš« Banned Pair! ${card.name} ile ${otherCard ? otherCard.name : pair.b} aynÄ± destede bulunamaz.`);
             return;
         }
         if (cardId === pair.b && currentDeckCardIds.includes(pair.a)) {
             const otherCard = cardDb[pair.a];
-            showToast(`🚫 Banned Pair! ${card.name} ile ${otherCard ? otherCard.name : pair.a} aynı destede bulunamaz.`);
+            showToast(`ğŸš« Banned Pair! ${card.name} ile ${otherCard ? otherCard.name : pair.a} aynÄ± destede bulunamaz.`);
             return;
         }
     }
@@ -914,7 +914,7 @@ function addCardToDeck(cardId) {
     // === 51 CARD LIMIT CHECK ===
     const totalCards = getCurrentDeckTotal();
     if (totalCards >= MAX_DECK_SIZE) {
-        showToast(`⚠️ Deste limiti! Maksimum ${MAX_DECK_SIZE} kart (1 Lider + 50 kart) eklenebilir.`);
+        showToast(`âš ï¸ Deste limiti! Maksimum ${MAX_DECK_SIZE} kart (1 Lider + 50 kart) eklenebilir.`);
         return;
     }
 
@@ -925,7 +925,7 @@ function addCardToDeck(cardId) {
         const cardColors = cardColor.split(/\s+/);
         const hasMatchingColor = cardColors.some(c => deckColors.includes(c));
         if (!hasMatchingColor && cardColor) {
-            showToast(`🎨 Renk uyumsuz! Bu kart (${card.color_tr || cardColor}) destenizin Lider rengiyle (${deckColors.join('/')}) uyuşmuyor.`);
+            showToast(`ğŸ¨ Renk uyumsuz! Bu kart (${card.color_tr || cardColor}) destenizin Lider rengiyle (${deckColors.join('/')}) uyuÅŸmuyor.`);
             return;
         }
     }
@@ -933,7 +933,7 @@ function addCardToDeck(cardId) {
     changeDeckCardQty(cardId, 1);
     document.getElementById("deckAddInput").value = "";
     document.getElementById("deckAddResults").style.display = "none";
-    showToast("✅ Kart desteye eklendi");
+    showToast("âœ… Kart desteye eklendi");
 }
 
 // === DECK HELPER FUNCTIONS ===
@@ -1026,7 +1026,7 @@ function renderDeckCards(deckCards) {
                 <div class="card-color-bar ${card.color || ''}"></div>
                 <img src="${card.image || `https://optcgapi.com/media/static/Card_Images/${card.id}.jpg`}" 
                      alt="${card.name}" loading="lazy"
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 250 350%22><rect fill=%22%2316161f%22 width=%22250%22 height=%22350%22/><text fill=%22%23555%22 font-size=%2214%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22>Görsel Yok</text></svg>'">
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 250 350%22><rect fill=%22%2316161f%22 width=%22250%22 height=%22350%22/><text fill=%22%23555%22 font-size=%2214%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22>GÃ¶rsel Yok</text></svg>'">
                 <button class="card-favorite-btn ${isFav ? 'favorited' : ''}" 
                         onclick="event.stopPropagation();toggleFavorite('${card.id}', this)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
@@ -1049,53 +1049,53 @@ function renderDeckCards(deckCards) {
 // ===== GUIDE (TUTORIAL) =====
 const guideSteps = [
     {
-        title: "1. Hazırlık ve Desteler",
-        desc: "Oyuna başlamak için 1 Lider kartı, tam 50 kartlık bir Ana Deste ve 10 kartlık bir DON!! destesine ihtiyacınız vardır. Her iki oyuncu da destesini karıştırır, Liderini alana koyar. Ardından desteden 5 kart çekilir. İsterseniz bu 5 kartı destenize geri karıştırıp yeni bir 5 kart çekebilirsiniz (Mulligan). Son olarak Liderinizin can değeri kadar kartı destenizin en üstünden kapalı şekilde 'Can Alanı'na yerleştirirsiniz.",
+        title: "1. HazÄ±rlÄ±k ve Desteler",
+        desc: "Oyuna baÅŸlamak iÃ§in 1 Lider kartÄ±, tam 50 kartlÄ±k bir Ana Deste ve 10 kartlÄ±k bir DON!! destesine ihtiyacÄ±nÄ±z vardÄ±r. Her iki oyuncu da destesini karÄ±ÅŸtÄ±rÄ±r, Liderini alana koyar. ArdÄ±ndan desteden 5 kart Ã§ekilir. Ä°sterseniz bu 5 kartÄ± destenize geri karÄ±ÅŸtÄ±rÄ±p yeni bir 5 kart Ã§ekebilirsiniz (Mulligan). Son olarak Liderinizin can deÄŸeri kadar kartÄ± destenizin en Ã¼stÃ¼nden kapalÄ± ÅŸekilde 'Can AlanÄ±'na yerleÅŸtirirsiniz.",
         highlightZones: ["zone-leader", "zone-deck", "zone-don-deck", "zone-life"]
     },
     {
-        title: "2. Oyun Alanı (Playmat)",
-        desc: "Oyun masası 6 ana bölgeden oluşur: Lider, Karakter Alanı (en fazla 5 karakter), Can Alanı, Deste & Çöplük, DON!! Destesi ve DON!! Maliyet Alanı (oynadığınız DON'ların durduğu yer). Ayrıca Sahne (Stage) kartları için ayrılmış özel bir alan bulunur.",
+        title: "2. Oyun AlanÄ± (Playmat)",
+        desc: "Oyun masasÄ± 6 ana bÃ¶lgeden oluÅŸur: Lider, Karakter AlanÄ± (en fazla 5 karakter), Can AlanÄ±, Deste & Ã‡Ã¶plÃ¼k, DON!! Destesi ve DON!! Maliyet AlanÄ± (oynadÄ±ÄŸÄ±nÄ±z DON'larÄ±n durduÄŸu yer). AyrÄ±ca Sahne (Stage) kartlarÄ± iÃ§in ayrÄ±lmÄ±ÅŸ Ã¶zel bir alan bulunur.",
         highlightZones: ["zone-character", "zone-leader", "zone-stage", "zone-deck", "zone-trash", "zone-don-deck", "zone-cost", "zone-life"]
     },
     {
         title: "3. Kart Tipleri",
-        desc: "Dört temel kart vardır: Lider (Oyunun kalbi), Karakterler (Saldırır ve savunur), Olaylar/Event (Oynandığı an etkisini gösterip çöpe gider) ve Sahneler/Stage (Alana kalıcı olarak yerleşir). DON!! kartları ise maliyetleri ödemek ve karakterleri güçlendirmek için kullanılan mananızdır.",
+        desc: "DÃ¶rt temel kart vardÄ±r: Lider (Oyunun kalbi), Karakterler (SaldÄ±rÄ±r ve savunur), Olaylar/Event (OynandÄ±ÄŸÄ± an etkisini gÃ¶sterip Ã§Ã¶pe gider) ve Sahneler/Stage (Alana kalÄ±cÄ± olarak yerleÅŸir). DON!! kartlarÄ± ise maliyetleri Ã¶demek ve karakterleri gÃ¼Ã§lendirmek iÃ§in kullanÄ±lan mananÄ±zdÄ±r.",
         highlightZones: []
     },
     {
-        title: "4. Tur Aşaması 1: Refresh & Draw",
-        desc: "Sıranız başladığında öncelikle 'Refresh Phase' gerçekleşir: Oyun alanınızda daha önce kullandığınız için yan çevrilmiş (Rested) tüm Karakterlerinizi ve DON!! kartlarınızı düz (Active) pozisyona getirirsiniz. Karakterlere eklenmiş DON!! kartları Maliyet alanına geri döner. Ardından 'Draw Phase' gelir ve destenizin en üstünden 1 kart çekersiniz. (Oyuna ilk başlayan oyuncu ilk turunda kart ÇEKEMEZ).",
+        title: "4. Tur AÅŸamasÄ± 1: Refresh & Draw",
+        desc: "SÄ±ranÄ±z baÅŸladÄ±ÄŸÄ±nda Ã¶ncelikle 'Refresh Phase' gerÃ§ekleÅŸir: Oyun alanÄ±nÄ±zda daha Ã¶nce kullandÄ±ÄŸÄ±nÄ±z iÃ§in yan Ã§evrilmiÅŸ (Rested) tÃ¼m Karakterlerinizi ve DON!! kartlarÄ±nÄ±zÄ± dÃ¼z (Active) pozisyona getirirsiniz. Karakterlere eklenmiÅŸ DON!! kartlarÄ± Maliyet alanÄ±na geri dÃ¶ner. ArdÄ±ndan 'Draw Phase' gelir ve destenizin en Ã¼stÃ¼nden 1 kart Ã§ekersiniz. (Oyuna ilk baÅŸlayan oyuncu ilk turunda kart Ã‡EKEMEZ).",
         highlightZones: ["zone-deck", "zone-cost", "zone-character"]
     },
     {
-        title: "5. Tur Aşaması 2: DON!! Phase",
-        desc: "Her tur DON!! destenizin en üstünden 2 adet DON!! kartı çeker ve 'Maliyet Alanı'na (Cost Area) düz (Active) olarak koyarsınız. Bu sizin bütçenizdir. (Oyuna ilk başlayan oyuncu ilk turunda sadece 1 DON!! kartı çeker). Maksimum 10 DON!! kartına sahip olabilirsiniz.",
+        title: "5. Tur AÅŸamasÄ± 2: DON!! Phase",
+        desc: "Her tur DON!! destenizin en Ã¼stÃ¼nden 2 adet DON!! kartÄ± Ã§eker ve 'Maliyet AlanÄ±'na (Cost Area) dÃ¼z (Active) olarak koyarsÄ±nÄ±z. Bu sizin bÃ¼tÃ§enizdir. (Oyuna ilk baÅŸlayan oyuncu ilk turunda sadece 1 DON!! kartÄ± Ã§eker). Maksimum 10 DON!! kartÄ±na sahip olabilirsiniz.",
         highlightZones: ["zone-don-deck", "zone-cost"]
     },
     {
-        title: "6. Ana Aşama (Main Phase)",
-        desc: "Bu aşamada aktif olan DON!! kartlarınızı yan çevirerek (Rested) bedelini ödeyip elinizden Karakter, Olay veya Sahne kartı oynayabilirsiniz. Ayrıca DON!! kartlarını Liderinize veya Karakterlerinize ekleyerek onlara +1000 Power (Güç) kazandırabilirsiniz.",
+        title: "6. Ana AÅŸama (Main Phase)",
+        desc: "Bu aÅŸamada aktif olan DON!! kartlarÄ±nÄ±zÄ± yan Ã§evirerek (Rested) bedelini Ã¶deyip elinizden Karakter, Olay veya Sahne kartÄ± oynayabilirsiniz. AyrÄ±ca DON!! kartlarÄ±nÄ± Liderinize veya Karakterlerinize ekleyerek onlara +1000 Power (GÃ¼Ã§) kazandÄ±rabilirsiniz.",
         highlightZones: ["zone-character", "zone-leader", "zone-cost"]
     },
     {
-        title: "7. Savaş ve Saldırı",
-        desc: "Saldırmak için düz duran (Active) Liderinizi veya bir Karakterinizi yan çevirirsiniz (Rested). Hedef olarak rakibin Liderini veya onun halihazırda 'Rested' pozisyonundaki bir Karakterini seçebilirsiniz. Güçleri (Power) karşılaştırılır. Saldıranın gücü eşit veya daha yüksekse, saldırı başarılı olur.",
+        title: "7. SavaÅŸ ve SaldÄ±rÄ±",
+        desc: "SaldÄ±rmak iÃ§in dÃ¼z duran (Active) Liderinizi veya bir Karakterinizi yan Ã§evirirsiniz (Rested). Hedef olarak rakibin Liderini veya onun halihazÄ±rda 'Rested' pozisyonundaki bir Karakterini seÃ§ebilirsiniz. GÃ¼Ã§leri (Power) karÅŸÄ±laÅŸtÄ±rÄ±lÄ±r. SaldÄ±ranÄ±n gÃ¼cÃ¼ eÅŸit veya daha yÃ¼ksekse, saldÄ±rÄ± baÅŸarÄ±lÄ± olur.",
         highlightZones: ["zone-character", "zone-leader"]
     },
     {
         title: "8. Savunma (Counter ve Blocker)",
-        desc: "Saldırıya uğrayan taraf hasar almamak için elindeki kartları çöpe atarak üzerlerinde yazan 'Counter' değeri kadar geçici güç kazanabilir. Ayrıca alanında 'Blocker' özelliği olan bir karakter varsa, onu yan çevirip saldırıyı kendi üzerine çekebilir.",
+        desc: "SaldÄ±rÄ±ya uÄŸrayan taraf hasar almamak iÃ§in elindeki kartlarÄ± Ã§Ã¶pe atarak Ã¼zerlerinde yazan 'Counter' deÄŸeri kadar geÃ§ici gÃ¼Ã§ kazanabilir. AyrÄ±ca alanÄ±nda 'Blocker' Ã¶zelliÄŸi olan bir karakter varsa, onu yan Ã§evirip saldÄ±rÄ±yÄ± kendi Ã¼zerine Ã§ekebilir.",
         highlightZones: ["zone-character", "zone-trash"]
     },
     {
         title: "9. Hasar Alma ve Trigger",
-        desc: "Eğer bir Lidere yapılan saldırı başarılı olursa, hasar alan lider Can Alanı'ndaki kapalı kartlarından en üsttekini eline alır. Eğer eline aldığı kartın üzerinde [Trigger] (Tetikleyici) yazıyorsa, kartın maliyetini ödemeden o anlık etkisini anında kullanabilir (örneğin rakip bir karakteri yok etme).",
+        desc: "EÄŸer bir Lidere yapÄ±lan saldÄ±rÄ± baÅŸarÄ±lÄ± olursa, hasar alan lider Can AlanÄ±'ndaki kapalÄ± kartlarÄ±ndan en Ã¼sttekini eline alÄ±r. EÄŸer eline aldÄ±ÄŸÄ± kartÄ±n Ã¼zerinde [Trigger] (Tetikleyici) yazÄ±yorsa, kartÄ±n maliyetini Ã¶demeden o anlÄ±k etkisini anÄ±nda kullanabilir (Ã¶rneÄŸin rakip bir karakteri yok etme).",
         highlightZones: ["zone-leader", "zone-life"]
     },
     {
-        title: "10. Bitiş Aşaması ve Kazanma",
-        desc: "Ana Aşamadaki hamleleriniz bittiğinde 'Sıram bitti' dersiniz ve sıra rakibe geçer. Oyunu kazanmanın koşulu şudur: Rakibinizin Can Alanı'nda hiç kart kalmamışken (yani 0 canı varken) Liderine başarılı bir saldırı daha yapmalısınız!",
+        title: "10. BitiÅŸ AÅŸamasÄ± ve Kazanma",
+        desc: "Ana AÅŸamadaki hamleleriniz bittiÄŸinde 'SÄ±ram bitti' dersiniz ve sÄ±ra rakibe geÃ§er. Oyunu kazanmanÄ±n koÅŸulu ÅŸudur: Rakibinizin Can AlanÄ±'nda hiÃ§ kart kalmamÄ±ÅŸken (yani 0 canÄ± varken) Liderine baÅŸarÄ±lÄ± bir saldÄ±rÄ± daha yapmalÄ±sÄ±nÄ±z!",
         highlightZones: ["zone-life", "zone-leader"]
     }
 ];
@@ -1189,7 +1189,7 @@ function updateGuideUI() {
         guideNextBtn.textContent = "Rehberi Kapat";
         guideNextBtn.style.background = "var(--green)";
     } else {
-        guideNextBtn.textContent = "Sonraki Adım";
+        guideNextBtn.textContent = "Sonraki AdÄ±m";
         guideNextBtn.style.background = "var(--accent)";
     }
 
@@ -1261,3 +1261,147 @@ function setupBackButton() {
         });
     }
 }
+
+
+// ===== AI CHATBOT =====
+const aiChatBtn = document.getElementById("aiChatBtn");
+const aiChatWindow = document.getElementById("aiChatWindow");
+const aiChatClose = document.getElementById("aiChatClose");
+const aiChatInput = document.getElementById("aiChatInput");
+const aiChatSend = document.getElementById("aiChatSend");
+const aiChatMessages = document.getElementById("aiChatMessages");
+
+let isChatbotTyping = false;
+
+if (aiChatBtn) {
+    aiChatBtn.addEventListener("click", () => {
+        aiChatWindow.classList.add("active");
+        aiChatInput.focus();
+    });
+}
+
+if (aiChatClose) {
+    aiChatClose.addEventListener("click", () => {
+        aiChatWindow.classList.remove("active");
+    });
+}
+
+if (aiChatSend) {
+    aiChatSend.addEventListener("click", handleChatbotSubmit);
+}
+
+if (aiChatInput) {
+    aiChatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleChatbotSubmit();
+        }
+    });
+}
+
+async function handleChatbotSubmit() {
+    const text = aiChatInput.value.trim();
+    if (!text || isChatbotTyping) return;
+
+    addChatMessage(text, "user");
+    aiChatInput.value = "";
+    
+    isChatbotTyping = true;
+    aiChatSend.disabled = true;
+    const loadingId = addChatLoading();
+    
+    try {
+        let contextText = "";
+        
+        const deckInputEl = document.getElementById("deckInput");
+        let deckText = "";
+        if (deckInputEl && deckInputEl.value.trim().length > 0) {
+            deckText = deckInputEl.value.trim();
+        } else if (typeof currentDeckId !== "undefined" && currentDeckId && typeof savedDecks !== "undefined") {
+            const activeDeck = savedDecks.find(d => d.id === currentDeckId);
+            if (activeDeck) deckText = activeDeck.content;
+        }
+        
+        if (deckText) {
+            contextText += "Kullanicinin su anki destesi su sekildedir:\n" + deckText + "\n\n";
+        }
+        
+        const foundCard = allCards.find(c => 
+            (c.name && text.toLowerCase().includes(c.name.toLowerCase())) || 
+            (c.id && text.toUpperCase().includes(c.id))
+        );
+        
+        if (foundCard) {
+            contextText += "Kullanicinin bahsettigi kart: [" + foundCard.id + "] " + foundCard.name + ". Tipi: " + (foundCard.type_tr || foundCard.type) + ". Maliyet: " + (foundCard.cost || 0) + ". Guc: " + (foundCard.power || 0) + ". Efekt: " + (foundCard.effect_tr || foundCard.effect_en || "Yok");
+        }
+
+        let responseText = "";
+        try {
+            const response = await fetch("http://localhost:3000/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: text, context: contextText })
+            });
+            const result = await response.json();
+            if (result.success) {
+                responseText = result.text;
+            } else {
+                responseText = "⚠️ " + result.error;
+            }
+        } catch (err) {
+            responseText = "Sunucuya baglanilamadi. Lutfen node server.js komutu ile sunucuyu baslattiginizdan emin olun.";
+        }
+
+        removeChatLoading(loadingId);
+        addChatMessage(responseText, "ai");
+
+    } catch (e) {
+        removeChatLoading(loadingId);
+        addChatMessage("Üzgünüm, şu an bağlantı kuramıyorum.", "ai");
+    } finally {
+        isChatbotTyping = false;
+        aiChatSend.disabled = false;
+        aiChatInput.focus();
+    }
+}
+
+function addChatMessage(text, sender) {
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "ai-message " + sender;
+    
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "ai-message-content";
+    contentDiv.textContent = text;
+    
+    msgDiv.appendChild(contentDiv);
+    aiChatMessages.appendChild(msgDiv);
+    
+    // Scroll to bottom
+    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+}
+
+function addChatLoading() {
+    const id = "loading-" + Date.now();
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "ai-message ai";
+    msgDiv.id = id;
+    
+    msgDiv.innerHTML = "<div class=\"ai-loading-indicator\"><div class=\"ai-dot\"></div><div class=\"ai-dot\"></div><div class=\"ai-dot\"></div></div>";
+    
+    aiChatMessages.appendChild(msgDiv);
+    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+    
+    return id;
+}
+
+function removeChatLoading(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+
+
+
+
+
+
