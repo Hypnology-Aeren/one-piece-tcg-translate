@@ -1,4 +1,4 @@
-﻿// ===== OPTCG Card Translator App =====
+// ===== OPTCG Card Translator App =====
 const API_BASE = "https://optcgapi.com/api";
 
 // State
@@ -330,6 +330,29 @@ function setupModal() {
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeModal();
     });
+    
+    const modalAiAnalyzeBtn = document.getElementById("modalAiAnalyzeBtn");
+    if (modalAiAnalyzeBtn) {
+        modalAiAnalyzeBtn.addEventListener("click", () => {
+            if (!currentModalCard) return;
+            
+            const cardName = currentModalCard.name || currentModalCard.card_name || "Bu kart";
+            const cardId = currentModalCard.id || currentModalCard.card_set_id || "";
+            
+            closeModal();
+            
+            const aiChatWindow = document.getElementById("aiChatWindow");
+            if (aiChatWindow && !aiChatWindow.classList.contains("active")) {
+                document.getElementById("aiChatBtn").click();
+            }
+            
+            const chatInput = document.getElementById("aiChatInput");
+            if (chatInput) {
+                chatInput.value = `[${cardId}] ${cardName} kartı nasıl oynanır, ne işe yarar ve hangi kartlarla kombo yapılabilir?`;
+                document.getElementById("aiChatSend").click();
+            }
+        });
+    }
 }
 
 async function openCardModal(cardId) {
