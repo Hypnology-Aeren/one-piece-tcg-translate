@@ -1388,13 +1388,31 @@ async function handleChatbotSubmit() {
     }
 }
 
+function formatChatText(text) {
+    let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    formatted = formatted.replace(/\[([A-Z]{2,4}-\d{3,4})\]/gi, (match, id) => {
+        const upperId = id.toUpperCase();
+        return `<span class="chat-card-inline" onclick="openCardModal('${upperId}')" style="cursor:pointer;" title="Karta git">
+            <img src="https://optcgapi.com/media/static/Card_Images/${upperId}.jpg" alt="${upperId}" onerror="this.style.display='none'">
+            <strong>[${upperId}]</strong>
+        </span>`;
+    });
+    formatted = formatted.replace(/\n/g, '<br>');
+    return formatted;
+}
+
 function addChatMessage(text, sender) {
     const msgDiv = document.createElement("div");
     msgDiv.className = "ai-message " + sender;
     
     const contentDiv = document.createElement("div");
     contentDiv.className = "ai-message-content";
-    contentDiv.textContent = text;
+    
+    if (sender === "user") {
+        contentDiv.textContent = text;
+    } else {
+        contentDiv.innerHTML = formatChatText(text);
+    }
     
     msgDiv.appendChild(contentDiv);
     aiChatMessages.appendChild(msgDiv);

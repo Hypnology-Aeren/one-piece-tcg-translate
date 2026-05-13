@@ -1,6 +1,6 @@
 {
   "name": "optcg-cevirici",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "OPTCG Kart Çevirici",
   "main": "main.js",
   "scripts": {
